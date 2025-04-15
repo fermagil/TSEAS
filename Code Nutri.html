@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Dietético Personalizado - NutriPlan</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <style>
+        /* --- General Styles --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            background-color: #ffffff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .logo a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 1.75em;
+            font-weight: 600;
+        }
+
+        nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; }
+        nav ul li { margin-left: 15px; }
+        nav ul li a { text-decoration: none; color: #495057; transition: color 0.3s ease; display: inline-block; padding: 8px 12px; border-radius: 5px; font-size: 0.95em; }
+        nav ul li a:hover, nav ul li a.active { color: #4CAF50; background-color: #e9f5e9; }
+        nav ul li.button a { background-color: #4CAF50; color: white; padding: 10px 18px; border-radius: 5px; font-weight: 500; transition: background-color 0.3s ease, transform 0.1s ease; }
+        nav ul li.button a:hover { background-color: #45a049; color: white; transform: translateY(-1px); }
+
+         /* --- Main Content & Sections --- */
+        main { padding: 30px 20px; max-width: 900px; margin: 20px auto; }
+        h1, h2, h3, h4 { color: #388E3C; margin-bottom: 20px; font-weight: 600; }
+        h1 { font-size: 2.2em; text-align: center; margin-bottom: 30px;}
+        h2 { font-size: 1.8em; border-bottom: 2px solid #a5d6a7; padding-bottom: 8px;}
+        h3 { font-size: 1.5em; }
+        h4 { font-size: 1.2em; color: #1B5E20; }
+        section { background-color: #ffffff; padding: 25px 30px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07); border: 1px solid #e0e0e0; }
+
+        /* --- Forms & Inputs --- */
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #343a40; }
+        select, input[type="number"], input[type="text"], button { width: 100%; padding: 12px 15px; margin-bottom: 18px; border: 1px solid #ced4da; border-radius: 5px; box-sizing: border-box; font-size: 1em; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+        input[type="number"]:focus, select:focus { border-color: #80bdff; outline: 0; box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
+        input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
+        button { background-color: #5cb85c; color: white; cursor: pointer; font-weight: 500; border: none; transition: background-color 0.3s ease, transform 0.1s ease; }
+        button:hover { background-color: #4cae4c; transform: translateY(-1px); }
+
+        /* --- Plan Steps & Results --- */
+        #plan-container { display: grid; grid-template-columns: 1fr; gap: 25px; }
+        .plan-step { border: 1px solid #e0e0e0; padding: 20px; border-radius: 6px; background-color: #fdfdfd; }
+        .plan-step p { color: #495057; margin-bottom: 15px; }
+
+        /* Results divs styling */
+        #calorie-result, #ideal-weight-result, #energy-balance-result, #macro-result, #meal-result, #time-estimation-result {
+            margin-top: 20px; padding: 18px; background-color: #e9f5e9; border: 1px solid #c8e6c9; border-radius: 5px; line-height: 1.7; color: #1B5E20;
+        }
+        /* Estilo específico para los párrafos de interpretación del BE */
+        #calorie-result p { margin-bottom: 10px; } /* Ajusta margen si es necesario */
+        #calorie-result strong { color: #388E3C; }
+
+        #macro-result ul, #meal-result ul { padding-left: 25px; margin-top: 10px; }
+        #macro-result li, #meal-result li { margin-bottom: 10px; color: #333; }
+        #macro-result strong, #meal-result strong, #time-estimation-result strong { color: #388E3C; }
+        #meal-result h3 { margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #c8e6c9; padding-bottom: 10px; }
+        #meal-result .plan-step { background-color: #f5fbf5 !important; border: 1px solid #d4eed5; }
+        #meal-result h4 { margin-bottom: 10px; }
+
+         /* Chart Container */
+         #chart-container {
+             margin-top: 20px; padding: 15px; background-color: #fff; border: 1px solid #dee2e6; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); max-width: 100%; height: 350px; position: relative; display: none; /* Oculto por defecto */
+         }
+         #chart-container canvas {
+             display: block; width: 100% !important; height: 100% !important;
+         }
+
+        /* Percentage inputs section styling */
+        #meal-percentage-inputs { margin-top: 20px; margin-bottom: 15px; padding: 15px; border: 1px dashed #ced4da; border-radius: 4px; background-color: #f8f9fa; }
+        #meal-percentage-inputs > label { font-weight: 600; margin-bottom: 15px; display: block; }
+        #meal-percentage-inputs div { display: flex; align-items: center; margin-bottom: 10px; }
+        #meal-percentage-inputs div label { width: 130px; margin-right: 10px; margin-bottom: 0; font-weight: normal; text-align: right; color: #495057; }
+        #meal-percentage-inputs div input { flex-grow: 1; margin-bottom: 0; padding: 8px 10px; max-width: 100px; }
+        #meal-percentage-inputs div span { margin-left: 8px; font-weight: 500; }
+        #percentage-total { font-size: 1.1em; }
+
+        /* --- Footer --- */
+        footer { background-color: #e9ecef; text-align: center; padding: 25px 20px; color: #6c757d; border-top: 1px solid #dee2e6; margin-top: 40px; font-size: 0.9em; }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            header { flex-direction: column; align-items: flex-start; padding: 15px 20px; }
+            .logo a { margin-bottom: 10px; }
+            nav ul { flex-direction: column; align-items: flex-start; width: 100%; margin-top: 10px; }
+            nav ul li { margin: 5px 0; width: 100%; }
+            nav ul li a { display: block; width: 100%; box-sizing: border-box; text-align: left; padding: 10px 15px; }
+            nav ul li.button a { text-align: center; }
+            main { padding: 20px 15px; }
+            h1 { font-size: 1.8em; } h2 { font-size: 1.5em; } h3 { font-size: 1.3em; }
+            section { padding: 20px; }
+            #meal-percentage-inputs div label { width: 100px; }
+        }
+        @media (max-width: 480px) {
+            body { font-size: 15px; }
+            h1 { font-size: 1.6em; } h2 { font-size: 1.3em; } h3 { font-size: 1.1em; }
+            #meal-percentage-inputs div { flex-direction: column; align-items: flex-start; }
+            #meal-percentage-inputs div label { width: auto; text-align: left; margin-bottom: 5px; }
+            #meal-percentage-inputs div input { max-width: none; }
+            #chart-container { height: 300px; } /* Adjust chart height */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><a href="#">NutriPlan</a></div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">Plan Dietético</a></li>
+                <li class="button"><a href="#step-1">Empezar Ahora</a></li>
+             </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h1>Crea tu Plan Dietético Personalizado</h1>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 30px auto; color: #495057;">
+                Sigue estos pasos guiados para obtener una estimación de tus necesidades nutricionales y generar un plan de comidas orientativo.
+            </p>
+            <div id="plan-container">
+
+                <div class="plan-step" id="step-1">
+                    <h2>1. Calcula tus Necesidades y Balance Energético</h2>
+                    <p>Introduce tus datos básicos para estimar tu Gasto Energético Total (GET) y, si lo deseas, tu ingesta actual para ver tu balance energético.</p>
+                    <form id="calorie-form" onsubmit="event.preventDefault(); calculateCalories();">
+                        <label for="age">Edad (años):</label>
+                         <input type="number" id="age" name="age" required min="1" max="120">
+
+                        <label for="gender">Género Biológico:</label>
+                        <select id="gender" name="gender">
+                            <option value="male">Masculino</option>
+                            <option value="female">Femenino</option>
+                        </select>
+
+                        <label for="weight">Peso Actual (kg):</label>
+                         <input type="number" id="weight" name="weight" required min="1" step="0.1">
+
+                        <label for="height">Altura (m):</label>
+                        <input type="number" id="height" name="height" step="0.01" required min="0.5" max="3" placeholder="Ej: 1.75">
+
+                         <label for="activity">Nivel de Actividad Física Semanal:</label>
+                        <select id="activity" name="activity">
+                            <option value="sedentary">Sedentario</option>
+                            <option value="light">Ligero (1-3 días/sem)</option>
+                            <option value="moderate">Moderado (3-5 días/sem)</option>
+                            <option value="active">Activo (6-7 días/sem)</option>
+                            <option value="very_active">Muy Activo (Intenso/Diario)</option>
+                        </select>
+
+                        <label for="estimated-intake">Tu Ingesta Calórica Estimada Actual (kcal/día, opcional):</label>
+                        <input type="number" id="estimated-intake" name="estimated-intake" min="0" step="1" placeholder="Si la conoces, ej: 2100">
+                        <button type="submit">Calcular GET y Balance</button>
+                     </form>
+                    <div id="calorie-result">
+                        </div>
+                </div>
+                <div class="plan-step" id="step-2">
+                    <h2>2. Calcula tu Peso Ideal (Opcional)</h2>
+                    <p>Si conoces tu % de grasa corporal y tienes un objetivo, estima un peso ideal teórico.</p>
+                    <form id="ideal-weight-form" onsubmit="event.preventDefault(); calculateIdealWeight();">
+                        <label for="current-fat-percentage">Grasa Corporal Actual (%):</label>
+                         <input type="number" id="current-fat-percentage" name="current-fat-percentage" min="1" max="70" step="0.1" placeholder="Si lo conoces (ej: 22.5)">
+                        <label for="desired-fat-percentage">Grasa Corporal Deseado (%):</label>
+                        <input type="number" id="desired-fat-percentage" name="desired-fat-percentage" min="1" max="70" step="0.1" placeholder="Objetivo saludable (ej: 18.0)">
+                         <button type="submit">Calcular Peso Ideal Teórico</button>
+                    </form>
+                    <div id="ideal-weight-result"></div>
+                </div>
+
+                <div class="plan-step" id="step-3">
+                     <h2>3. Establece tu Objetivo de Peso</h2>
+                    <p>Selecciona tu meta para ajustar tus calorías diarias y estimar el tiempo para alcanzar tu peso ideal (si lo calculaste).</p>
+                    <form id="energy-balance-form" onsubmit="event.preventDefault(); calculateEnergyBalance();">
+                        <label for="weight-goal">Mi Objetivo Principal es:</label>
+                         <select id="weight-goal" name="weight-goal">
+                            <option value="maintain">Mantener peso actual</option>
+                            <option value="lose">Perder peso</option>
+                             <option value="gain">Ganar peso/músculo</option>
+                        </select>
+                        <button type="submit">Ajustar Calorías y Estimar Tiempo</button>
+                    </form>
+                     <div id="energy-balance-result"></div>
+                    <div id="time-estimation-result" style="margin-top: 15px;"></div>
+                     <div id="chart-container"> <canvas id="weight-chart"></canvas>
+                    </div>
+                </div>
+
+                 <div class="plan-step" id="step-4">
+                    <h2>4. Define tu Distribución de Macronutrientes</h2>
+                    <p>Establece qué porcentaje de tus calorías diarias (%kcal) vendrá de cada macronutriente (suma debe ser 100%).</p>
+                    <form id="macro-form" onsubmit="event.preventDefault(); calculateMacros();">
+                        <label for="macro-calories">Calorías Objetivo Diarias (kcal):</label>
+                         <input type="number" id="macro-calories" name="macro-calories" required min="1" readonly>
+                        <label for="protein-percentage">Proteínas (%):</label>
+                        <input type="number" id="protein-percentage" name="protein-percentage" value="25" required min="10" max="50" step="1">
+                         <label for="fat-percentage">Grasas (%):</label>
+                        <input type="number" id="fat-percentage" name="fat-percentage" value="30" required min="15" max="50" step="1">
+                        <label for="carb-percentage">Carbohidratos (%):</label>
+                        <input type="number" id="carb-percentage" name="carb-percentage" value="45" required min="20" max="70" step="1">
+                         <button type="submit">Calcular Gramos de Macronutrientes</button>
+                    </form>
+                    <div id="macro-result"></div>
+                </div>
+
+                <div class="plan-step" id="step-5">
+                     <h2>5. Distribución por Comida y Sugerencias</h2>
+                    <p>Elige nº de comidas y distribuye tus calorías. Obtendrás macros por comida y sugerencias (Modelo Harvard).</p>
+                    <form id="meal-form" onsubmit="event.preventDefault(); designMeals();">
+                        <label for="num-meals">Número de Comidas al día:</label>
+                        <select id="num-meals" name="num-meals"> <option value="3" selected>3</option> <option value="4">4</option> <option value="5">5</option> </select>
+                         <div id="meal-percentage-inputs"> </div>
+                        <p style="text-align: right; font-weight: bold; margin-top: 10px;">Total: <span id="percentage-total">0</span>%</p>
+                        <button type="submit">Generar Distribución y Sugerencias</button>
+                    </form>
+                     <div id="meal-result"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 NutriPlan</p> <p><small>Esta herramienta proporciona estimaciones y sugerencias orientativas. No sustituye el consejo de un profesional de la salud o dietista-nutricionista. Consulta siempre a un experto.</small></p>
+    </footer>
+
+   <script>
+        // --- Estado Global Simple ---
+        let calculatedCalories = null; // GET calculado en Paso 1
+        let calculatedIdealWeight = null;
+        let adjustedCalories = null; // Calorías ajustadas por objetivo (Paso 3)
+        let calculatedMacrosGrams = null;
+        let weightChartInstance = null;
+
+        // --- Constantes ---
+        const KCAL_PER_KG = 7700;
+
+        // --- Selectores de Elementos del DOM ---
+        const calorieResultDiv = document.getElementById('calorie-result');
+        const idealWeightResultDiv = document.getElementById('ideal-weight-result');
+        const energyBalanceResultDiv = document.getElementById('energy-balance-result');
+        const timeEstimationResultDiv = document.getElementById('time-estimation-result');
+        const chartContainer = document.getElementById('chart-container');
+        const weightChartCanvas = document.getElementById('weight-chart');
+        const macroCaloriesInput = document.getElementById('macro-calories');
+        const macroResultDiv = document.getElementById('macro-result');
+        const numMealsSelect = document.getElementById('num-meals');
+        const percentageInputsContainer = document.getElementById('meal-percentage-inputs');
+        const percentageTotalSpan = document.getElementById('percentage-total');
+        const mealResultDiv = document.getElementById('meal-result');
+        const estimatedIntakeInput = document.getElementById('estimated-intake'); // Selector añadido
+
+
+        // --- Función de Validación General ---
+        // Valida campos numéricos estándar (edad, peso, altura, macros %, etc.)
+        // NO valida el campo 'estimated-intake' aquí, se maneja en calculateCalories
+        function validateInputs(...inputs) {
+             for (const input of inputs) {
+                 // Check if input is an element or just a value (less likely use case here)
+                 const value = input && input.value !== undefined ? parseFloat(input.value) : parseFloat(input);
+                 const inputId = input ? input.id : null;
+
+                 // Basic checks for null/undefined/NaN
+                 if (input === null || input === undefined || isNaN(value)) {
+                     // Exception for fat percentage inputs allowing 0 (handled later for < 0)
+                     if (!((inputId === 'current-fat-percentage' || inputId === 'desired-fat-percentage') && value === 0)) {
+                        console.error("Validation failed (NaN or missing):", inputId, "Value:", value);
+                        return false;
+                     }
+                 }
+
+                 // General non-negative check (except for fat % which can be 0 initially)
+                 if (value < 0 && inputId !== 'current-fat-percentage' && inputId !== 'desired-fat-percentage') {
+                    console.error("Validation failed (negative value):", inputId, "Value:", value);
+                    return false;
+                 }
+
+                 // Positive value check for specific fields
+                 if (['age', 'weight', 'height', 'macro-calories'].includes(inputId) && value <= 0) {
+                     console.error("Validation failed (must be positive):", inputId, "Value:", value);
+                     return false;
+                 }
+                 // Range check for macro percentages
+                 if (['protein-percentage', 'fat-percentage', 'carb-percentage'].includes(inputId) && (value < 0 || value > 100) ) { // Allow 0-100 now
+                     console.error("Validation failed (macro % out of range 0-100):", inputId, "Value:", value);
+                     return false;
+                 }
+                 // Range check for fat percentages (if entered)
+                 if (['current-fat-percentage', 'desired-fat-percentage'].includes(inputId) && (value < 0 || value >= 100)) { // Allow 0, but not >=100
+                     console.error("Validation failed (fat % out of range 0-<100):", inputId, "Value:", value);
+                     return false;
+                 }
+             }
+             return true;
+        }
+
+        // --- Limpiar Resultados Posteriores y Gráfico ---
+        function clearSubsequentResults(step) {
+            // Limpia resultados de pasos posteriores cuando se recalcula un paso anterior
+            if (step <= 1) { // Si se cambia algo en el Paso 1
+                 energyBalanceResultDiv.innerHTML = ""; // Limpia Paso 3
+                 timeEstimationResultDiv.innerHTML = "";
+                 chartContainer.style.display = 'none';
+                 if (weightChartInstance) { weightChartInstance.destroy(); weightChartInstance = null; }
+                 macroCaloriesInput.value = ""; // Limpia campo calorías en Paso 4
+                 adjustedCalories = null; // Resetea calorías ajustadas
+                 calculatedIdealWeight = null; // Resetea peso ideal (Paso 2)
+                 idealWeightResultDiv.innerHTML = ""; // Limpia resultado Paso 2
+            }
+            if (step <= 2) { // Si se cambia algo en el Paso 2 (Peso Ideal)
+                 energyBalanceResultDiv.innerHTML = ""; // Limpia Paso 3
+                 timeEstimationResultDiv.innerHTML = "";
+                 chartContainer.style.display = 'none';
+                 if (weightChartInstance) { weightChartInstance.destroy(); weightChartInstance = null; }
+                // No necesariamente limpia macros (Paso 4) si las calorías (Paso 3) no han cambiado
+            }
+            if (step <= 3) { // Si se cambia el objetivo en Paso 3
+                 macroResultDiv.innerHTML = ""; // Limpia resultado Paso 4
+                 calculatedMacrosGrams = null;
+            }
+            if (step <= 4) { // Si se cambian macros en Paso 4
+                 mealResultDiv.innerHTML = ""; // Limpia resultado Paso 5
+            }
+        }
+
+
+        // --- PASO 1: Cálculo de Calorías y Balance Energético (MODIFICADO) ---
+        function calculateCalories() {
+            const ageInput = document.getElementById('age');
+            const gender = document.getElementById('gender').value;
+            const weightInput = document.getElementById('weight');
+            const heightInput = document.getElementById('height');
+            const activity = document.getElementById('activity').value;
+            // No es necesario buscar estimatedIntakeInput aquí, ya está global
+
+            clearSubsequentResults(1); // Limpia resultados posteriores
+
+            // Validación básica (excluye el campo 'estimated-intake' que es opcional)
+            if (!validateInputs(ageInput, weightInput, heightInput)) {
+                alert("Introduce valores válidos para edad, peso y altura.");
+                calorieResultDiv.innerHTML = "";
+                calculatedCalories = null;
+                return;
+            }
+
+            const age = parseInt(ageInput.value);
+            const weight = parseFloat(weightInput.value);
+            const height = parseFloat(heightInput.value);
+            const estimatedIntake = parseFloat(estimatedIntakeInput.value); // Obtener ingesta estimada
+
+            // Calcular BMR (Tasa Metabólica Basal)
+            let bmr;
+            const heightCm = height * 100;
+            if (gender === 'male') {
+                bmr = (10 * weight) + (6.25 * heightCm) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * heightCm) - (5 * age) - 161;
+            }
+
+            // Calcular GET (Gasto Energético Total)
+            let activityFactor;
+            switch (activity) {
+                case 'sedentary': activityFactor = 1.2; break;
+                case 'light': activityFactor = 1.375; break;
+                case 'moderate': activityFactor = 1.55; break;
+                case 'active': activityFactor = 1.725; break;
+                case 'very_active': activityFactor = 1.9; break;
+                default: activityFactor = 1.2;
+            }
+            const totalCalories = Math.round(bmr * activityFactor); // GET calculado
+            calculatedCalories = totalCalories; // Guardar GET para pasos siguientes
+            adjustedCalories = totalCalories; // Inicializar calorías ajustadas con el GET
+
+            // --- Calcular y Mostrar Balance Energético (BE) ---
+            let resultHTML = `<p>Tu GET estimado es: <strong>${totalCalories} kcal/día</strong>.</p>`;
+            let balanceInterpretation = "";
+
+            // Solo calcular BE si se introdujo una ingesta válida y positiva
+            if (!isNaN(estimatedIntake) && estimatedIntake > 0) {
+                 // Validar que la ingesta estimada no sea negativa (aunque el min=0 ya ayuda)
+                 if (estimatedIntake < 0) {
+                    alert("La ingesta estimada no puede ser negativa.");
+                    estimatedIntakeInput.value = ''; // Limpiar campo
+                    calorieResultDiv.innerHTML = resultHTML + `<p>Introduce una ingesta estimada válida (positiva) para calcular tu balance energético.</p>`;
+                    return; // Detener si la ingesta es inválida
+                 }
+
+                 const energyBalance = Math.round(estimatedIntake - totalCalories); // BE = Ingesta - GET
+
+                 resultHTML += `<p>Tu ingesta estimada: <strong>${estimatedIntake} kcal/día</strong>.</p>`;
+                 resultHTML += `<p>Tu Balance Energético (BE) actual estimado es: <strong>${energyBalance} kcal/día</strong>.</p><hr>`; // Línea separadora
+
+                 // Interpretación del Balance Energético
+                 const umbral = 50; // Umbral para considerar el balance significativo
+                 if (energyBalance > umbral) { // Superávit significativo
+                     balanceInterpretation = `<p style="color: #c0392b;"><strong>Interpretación:</strong> Estás en un <strong>superávit calórico</strong> estimado (${energyBalance > 0 ? '+' : ''}${energyBalance} kcal). Esto generalmente conduce a una <strong>ganancia de peso</strong>. Si tu objetivo es perder grasa, tu ingesta actual podría ser demasiado alta. Si buscas ganar músculo, podrías estar en el camino correcto (ajusta según progreso y composición corporal).</p>`;
+                 } else if (energyBalance < -umbral) { // Déficit significativo
+                     balanceInterpretation = `<p style="color: #27ae60;"><strong>Interpretación:</strong> Estás en un <strong>déficit calórico</strong> estimado (${energyBalance} kcal). Esto generalmente conduce a una <strong>pérdida de peso</strong>. Si tu objetivo es ganar músculo o mantener peso, tu ingesta actual podría ser demasiado baja. Si buscas perder grasa, podrías estar en el camino correcto (ajusta según progreso y sensaciones).</p>`;
+                 } else { // Balance neutro (cercano a cero)
+                     balanceInterpretation = `<p style="color: #2980b9;"><strong>Interpretación:</strong> Estás cerca de un <strong>balance energético neutro</strong> estimado (${energyBalance > 0 ? '+' : ''}${energyBalance} kcal). Esto generalmente lleva al <strong>mantenimiento del peso</strong>. Ajusta tu ingesta según tu objetivo específico (ligero déficit para perder, ligero superávit para ganar) si deseas cambiar tu peso.</p>`;
+                 }
+            } else if (estimatedIntakeInput.value !== '') { // Si el campo no está vacío pero no es válido > 0
+                 resultHTML += `<p>Introduce un valor numérico positivo en 'Tu Ingesta Estimada' para calcular el balance.</p>`;
+            } else { // Si el campo está vacío
+                 resultHTML += `<p>Introduce tu ingesta estimada actual (si la conoces) para calcular tu balance energético.</p>`
+            }
+
+            calorieResultDiv.innerHTML = resultHTML + balanceInterpretation; // Mostrar GET y BE + Interpretación
+            macroCaloriesInput.value = totalCalories; // Poner el GET como base para macros (luego se ajustará en paso 3)
+        }
+
+
+        // --- PASO 2: Cálculo de Peso Ideal ---
+        function calculateIdealWeight() {
+            const weightInput = document.getElementById('weight');
+            const currentFatInput = document.getElementById('current-fat-percentage');
+            const desiredFatInput = document.getElementById('desired-fat-percentage');
+
+            idealWeightResultDiv.innerHTML = ""; // Limpiar resultado anterior
+            const prevCalculatedIdealWeight = calculatedIdealWeight; // Guardar valor anterior
+            calculatedIdealWeight = null; // Resetear globalmente
+
+            // Necesitamos el peso actual del Paso 1
+            if (calculatedCalories === null || !validateInputs(weightInput)) {
+                alert("Calcula primero tus calorías (Paso 1) para usar el peso actual.");
+                return;
+            }
+             // Validar campos de grasa corporal (pueden estar vacíos o ser 0)
+             if (!validateInputs(currentFatInput, desiredFatInput)) {
+                 alert("Introduce porcentajes de grasa válidos (entre 0 y 99.9) si deseas calcular el peso ideal.");
+                 return;
+             }
+
+
+            const weight = parseFloat(weightInput.value);
+            const currentFatPercentage = parseFloat(currentFatInput.value) || 0; // Si está vacío, es 0
+            const desiredFatPercentage = parseFloat(desiredFatInput.value) || 0; // Si está vacío, es 0
+
+            // Comprobaciones específicas para el cálculo
+            if (currentFatPercentage <= 0 || currentFatPercentage >= 100) {
+                 alert("Introduce un % de Grasa Corporal Actual válido (>0 y <100).");
+                 return;
+            }
+             if (desiredFatPercentage <= 0 || desiredFatPercentage >= 100) {
+                 alert("Introduce un % de Grasa Corporal Deseado válido (>0 y <100).");
+                 return;
+            }
+            if (currentFatPercentage <= desiredFatPercentage) {
+                  alert("El % de grasa deseado debe ser menor que el actual para este cálculo.");
+                  return;
+            }
+
+            // Calcular peso ideal basado en masa magra constante
+            const leanMass = weight * (1 - currentFatPercentage / 100);
+            const idealWeight = leanMass / (1 - desiredFatPercentage / 100);
+
+            if (isNaN(idealWeight) || idealWeight <= 0) {
+                 idealWeightResultDiv.innerHTML = `<p>No se pudo calcular el peso ideal.</p>`;
+            } else {
+                 calculatedIdealWeight = parseFloat(idealWeight.toFixed(1)); // Guardar globalmente redondeado
+                 idealWeightResultDiv.innerHTML = `<p>Peso Ideal Teórico: <strong>${calculatedIdealWeight} kg</strong>.</p><p><small>Estimación basada en mantener masa magra y alcanzar % grasa deseado.</small></p>`;
+
+                 // Si el peso ideal calculado cambia, limpiar resultados del Paso 3
+                 if (calculatedIdealWeight !== prevCalculatedIdealWeight) {
+                    clearSubsequentResults(2);
+                 }
+            }
+        }
+
+        // --- PASO 3: Cálculo del Balance Energético y Estimación de Tiempo ---
+        function calculateEnergyBalance() {
+            const weightGoal = document.getElementById('weight-goal').value;
+            const currentWeight = parseFloat(document.getElementById('weight').value); // Obtener peso actual de nuevo
+
+            // Limpiar resultados anteriores del Paso 3 y posteriores
+            energyBalanceResultDiv.innerHTML = "";
+            timeEstimationResultDiv.innerHTML = "";
+            chartContainer.style.display = 'none'; // Ocultar gráfico
+            if (weightChartInstance) { weightChartInstance.destroy(); weightChartInstance = null; }
+            clearSubsequentResults(3); // Limpia pasos 4, 5
+
+            if (calculatedCalories === null || isNaN(currentWeight)) { // Necesita GET del paso 1
+                alert("Primero debes calcular tus necesidades calóricas en el Paso 1.");
+                adjustedCalories = null;
+                return;
+            }
+
+            let targetCalories = calculatedCalories; // Empezar con el GET
+            let message = `Para <strong>mantener tu peso</strong> (${currentWeight} kg), tu ingesta objetivo sigue siendo: <strong>${calculatedCalories} kcal/día</strong>.`;
+            let adjustment = 0; // Ajuste calórico diario
+
+            if (weightGoal === 'lose') {
+                 adjustment = -400; // Déficit por defecto
+                 targetCalories = calculatedCalories + adjustment;
+                 // Limitar déficit mínimo a 1200 kcal (ajustable)
+                 if (targetCalories < 1200) {
+                     targetCalories = 1200;
+                     adjustment = targetCalories - calculatedCalories; // Recalcular ajuste real
+                     alert("Advertencia: El déficit calórico se ha limitado para no bajar de 1200 kcal/día.");
+                 }
+                 message = `Para <strong>perder peso</strong>, tu ingesta objetivo ajustada es: <strong>${targetCalories} kcal/día</strong> (déficit de ${Math.abs(adjustment)} kcal/día sobre tu GET).`;
+            } else if (weightGoal === 'gain') {
+                 adjustment = 300; // Superávit por defecto
+                 targetCalories = calculatedCalories + adjustment;
+                 message = `Para <strong>ganar peso/músculo</strong>, tu ingesta objetivo ajustada es: <strong>${targetCalories} kcal/día</strong> (superávit de ${adjustment} kcal/día sobre tu GET).`;
+            }
+
+            adjustedCalories = targetCalories; // Guardar calorías ajustadas globalmente
+            energyBalanceResultDiv.innerHTML = `<p>${message}</p>`;
+            macroCaloriesInput.value = targetCalories; // Actualizar campo en Paso 4
+            // updatePercentageInputs(); // No es necesario llamar aquí, se llama al inicio y con numMeals
+
+            // --- Lógica de Estimación de Tiempo y Gráfico ---
+            // Solo si hay un ajuste (!=0) y se calculó un peso ideal válido
+            if (adjustment !== 0 && calculatedIdealWeight !== null && !isNaN(calculatedIdealWeight) && calculatedIdealWeight > 0) {
+                const weightDifference = currentWeight - calculatedIdealWeight;
+
+                // Comprobar si la meta coincide con la dirección necesaria para alcanzar el peso ideal
+                if ((weightGoal === 'lose' && weightDifference > 0) || (weightGoal === 'gain' && weightDifference < 0)) {
+                    const totalKcalChangeNeeded = Math.abs(weightDifference) * KCAL_PER_KG;
+                    const dailyAdjustmentAbs = Math.abs(adjustment);
+
+                    if (dailyAdjustmentAbs > 0) {
+                        const daysNeeded = totalKcalChangeNeeded / dailyAdjustmentAbs;
+                        const weeksNeeded = Math.ceil(daysNeeded / 7); // Redondear semanas hacia arriba
+
+                        timeEstimationResultDiv.innerHTML = `<p>Tiempo estimado para alcanzar <strong>${calculatedIdealWeight} kg</strong>: <strong>${weeksNeeded} semanas</strong>.</p>
+                                                           <p><small>(Tasa aprox.: ${ (weightDifference / weeksNeeded).toFixed(2)} kg/semana. Estimación teórica basada en ajuste constante de ${adjustment} kcal/día. El progreso real puede variar).</small></p>`;
+
+                        // --- Preparar Datos del Gráfico ---
+                        const chartLabels = [];
+                        const chartData = [];
+                        const maxWeeksToShow = 52 * 2; // Limitar gráfico a 2 años
+                        const actualWeeks = Math.min(weeksNeeded, maxWeeksToShow); // Semanas a mostrar
+
+                        for (let w = 0; w <= actualWeeks; w++) {
+                            chartLabels.push(`Sem ${w}`);
+                            const projectedWeight = currentWeight + (adjustment * 7 * w) / KCAL_PER_KG;
+                            // Asegurar que el gráfico no sobrepase el objetivo
+                            const finalWeight = (weightGoal === 'lose')
+                                ? Math.max(projectedWeight, calculatedIdealWeight)
+                                : Math.min(projectedWeight, calculatedIdealWeight);
+                            chartData.push(finalWeight.toFixed(1));
+                        }
+                        // Asegurar que el peso objetivo sea el último punto si se alcanza
+                         if (weeksNeeded <= maxWeeksToShow && parseFloat(chartData[chartData.length - 1]) !== calculatedIdealWeight) {
+                             if(chartData.length > weeksNeeded + 1) chartData.length = weeksNeeded + 1; // Recortar si excede
+                             chartData[weeksNeeded] = calculatedIdealWeight.toFixed(1);
+                             chartLabels[weeksNeeded] = `Sem ${weeksNeeded}`; // Asegurar etiqueta correcta
+                         }
+
+
+                        chartContainer.style.display = 'block'; // Mostrar contenedor del gráfico
+                        renderWeightChart(chartLabels, chartData, currentWeight, calculatedIdealWeight); // Dibujar gráfico
+
+                    } else { // Ajuste es 0, aunque no debería llegar aquí si adjustment !== 0
+                        timeEstimationResultDiv.innerHTML = `<p>El ajuste calórico es cero, no se espera cambio de peso.</p>`;
+                    }
+                } else if (Math.abs(weightDifference) < 0.1) { // Ya está cerca del peso ideal
+                     timeEstimationResultDiv.innerHTML = `<p>¡Ya estás muy cerca de tu peso ideal teórico (${calculatedIdealWeight} kg)!</p>`;
+                 } else { // La meta no coincide con la dirección (ej: quiere perder pero está por debajo del peso ideal)
+                     timeEstimationResultDiv.innerHTML = `<p>Tu objetivo (${weightGoal}) no coincide con la dirección necesaria para alcanzar tu peso ideal teórico (${calculatedIdealWeight} kg). No se puede estimar el tiempo.</p>`;
+                 }
+
+            } else if (adjustment !== 0 && calculatedIdealWeight === null) { // Objetivo definido, pero sin peso ideal calculado
+                 timeEstimationResultDiv.innerHTML = `<p>Calcula tu peso ideal teórico en el Paso 2 si deseas una estimación del tiempo necesario.</p>`;
+             }
+            // Fin Lógica Estimación de Tiempo
+        }
+
+        // --- PASO 4: Cálculo de Macronutrientes ---
+        function calculateMacros() {
+             const caloriesInput = document.getElementById('macro-calories'); // Usa adjustedCalories
+             const proteinInput = document.getElementById('protein-percentage');
+             const fatInput = document.getElementById('fat-percentage');
+             const carbInput = document.getElementById('carb-percentage');
+
+             clearSubsequentResults(4); // Limpiar paso 5
+
+             // Validar que haya calorías ajustadas y los % sean válidos
+             if (adjustedCalories === null || !validateInputs(proteinInput, fatInput, carbInput)) {
+                 alert("Asegúrate de haber completado los Pasos 1 y 3, y de introducir porcentajes válidos para los macros (0-100).");
+                 macroResultDiv.innerHTML = "";
+                 calculatedMacrosGrams = null;
+                 return;
+             }
+
+             const calories = adjustedCalories; // Usar las calorías ajustadas del Paso 3
+             const proteinPercentage = parseFloat(proteinInput.value) || 0;
+             const fatPercentage = parseFloat(fatInput.value) || 0;
+             const carbPercentage = parseFloat(carbInput.value) || 0;
+
+             const totalPercentage = Math.round(proteinPercentage + fatPercentage + carbPercentage);
+             if (totalPercentage !== 100) {
+                 alert(`La suma de los porcentajes debe ser 100%, actualmente es ${totalPercentage}%. Ajusta los valores.`);
+                 macroResultDiv.innerHTML = "";
+                 calculatedMacrosGrams = null;
+                 return;
+             }
+
+             // Calcular gramos (Proteínas y Carbs: 4 kcal/g, Grasas: 9 kcal/g)
+             const proteinGrams = (calories * proteinPercentage / 100) / 4;
+             const fatGrams = (calories * fatPercentage / 100) / 9;
+             const carbGrams = (calories * carbPercentage / 100) / 4;
+
+             calculatedMacrosGrams = { protein: proteinGrams, fat: fatGrams, carbs: carbGrams }; // Guardar globalmente
+
+             macroResultDiv.innerHTML = `
+                 <p><strong>Macros Totales (Gramos/día):</strong></p>
+                 <ul style="list-style: none; padding-left: 0;">
+                    <li><strong>Proteínas:</strong> ${proteinGrams.toFixed(1)} g (${proteinPercentage.toFixed(0)}%)</li>
+                    <li><strong>Grasas:</strong> ${fatGrams.toFixed(1)} g (${fatPercentage.toFixed(0)}%)</li>
+                    <li><strong>Carbohidratos:</strong> ${carbGrams.toFixed(1)} g (${carbPercentage.toFixed(0)}%)</li>
+                 </ul><hr>
+                 <p><strong>Recomendaciones Clave:</strong></p>
+                 <ul>
+                    <li>Prioriza fuentes de proteína magra (pollo, pavo, pescado, legumbres, tofu, huevos, lácteos bajos en grasa).</li>
+                    <li>Elige carbohidratos complejos ricos en fibra (vegetales, frutas, granos integrales, legumbres).</li>
+                    <li>Incorpora grasas saludables (aceite de oliva virgen extra, aguacate, frutos secos, semillas, pescado azul).</li>
+                    <li>Limita el consumo de ultraprocesados, azúcares añadidos y grasas trans.</li>
+                    <li>Asegura una buena hidratación (principalmente agua) y una ingesta adecuada de vitaminas y minerales.</li>
+                 </ul>`;
+        }
+
+
+        // --- PASO 5: Lógica de Distribución por Comida ---
+
+        const mealSlotNames = {
+            3: ["Desayuno", "Comida", "Cena"],
+            4: ["Desayuno", "Media Mañana", "Comida", "Cena"],
+            5: ["Desayuno", "Media Mañana", "Comida", "Merienda", "Cena"]
+        };
+        const defaultPercentages = {
+             3: [30, 40, 30],
+             4: [25, 15, 35, 25],
+             5: [20, 10, 35, 10, 25]
+         };
+
+        // Actualiza los inputs de % de comida cuando cambia el número de comidas
+        function updatePercentageInputs() {
+            const numMeals = parseInt(numMealsSelect.value);
+            const slots = mealSlotNames[numMeals];
+            percentageInputsContainer.innerHTML = '<label>Distribución Calorías (% por comida):</label>'; // Título de la sección
+
+            slots.forEach((slot, index) => {
+                const inputId = `percentage-${slot.toLowerCase().replace(/ /g, '-')}`;
+                const defaultValue = defaultPercentages[numMeals][index];
+                // Crear HTML para cada input de porcentaje
+                const inputHTML = `
+                    <div>
+                        <label for="${inputId}">${slot}:</label>
+                        <input type="number" id="${inputId}" name="${inputId}" class="meal-percentage-input"
+                               min="0" max="100" step="1" value="${defaultValue}" required
+                               oninput="updateTotalPercentage()">
+                        <span>%</span>
+                    </div>`;
+                percentageInputsContainer.innerHTML += inputHTML;
+            });
+            updateTotalPercentage(); // Calcular total inicial
+        }
+
+        // Actualiza el span que muestra el % total de las comidas
+        function updateTotalPercentage() {
+            const percentageInputs = percentageInputsContainer.querySelectorAll('.meal-percentage-input');
+            let total = 0;
+            percentageInputs.forEach(input => {
+                total += parseFloat(input.value) || 0; // Sumar valores, tratar NaN como 0
+            });
+            const totalRounded = Math.round(total);
+            percentageTotalSpan.textContent = totalRounded; // Mostrar total redondeado
+
+            // Cambiar color del total para feedback visual
+            if (totalRounded === 100) {
+                percentageTotalSpan.style.color = '#28a745'; // Verde si es 100%
+                percentageTotalSpan.style.fontWeight = 'bold';
+            } else {
+                percentageTotalSpan.style.color = '#dc3545'; // Rojo si no es 100%
+                percentageTotalSpan.style.fontWeight = 'normal';
+            }
+        }
+
+        // --- Datos Harvard Plate (Refinados) ---
+        const harvardPlate = {
+            "Vegetales": ["Espinacas", "Brócoli", "Zanahorias", "Pimiento rojo", "Tomate", "Calabacín", "Judías verdes", "Ensalada variada", "Coliflor", "Champiñones", "Cebolla", "Acelgas", "Pepino"],
+            "Frutas": ["Manzana", "Plátano", "Naranja", "Fresas", "Arándanos", "Pera", "Kiwi", "Uvas", "Melocotón", "Sandía", "Melón"],
+            "Granos Integrales": ["Avena en copos", "Arroz integral", "Quinoa", "Pan integral de centeno", "Pasta integral", "Cuscús integral", "Tortilla integral de trigo", "Tortilla de maíz", "Trigo sarraceno"],
+            "Proteína Saludable": ["Pechuga de pollo", "Pechuga de pavo", "Salmón", "Merluza", "Bacalao", "Atún al natural", "Lentejas", "Garbanzos", "Alubias", "Tofu firme", "Tempeh", "Huevo", "Yogur griego natural", "Queso fresco batido 0%", "Claras de huevo", "Seitán"],
+            "Grasas Saludables": ["Aceite de oliva virgen extra", "Aguacate", "Nueces", "Almendras", "Avellanas", "Pistachos", "Semillas de chía", "Semillas de lino molidas", "Semillas de calabaza", "Aceitunas"],
+            "Bebidas": ["Agua", "Infusión sin azúcar", "Café solo", "Té verde", "Agua con gas"]
+        };
+
+        // --- Plantillas de Comidas (Ejemplos) ---
+        const menuIdeas = {
+             "Desayuno": [
+                 "Avena cocida ([Granos Integrales]) con [Frutas] y [Grasas Saludables (nueces)]",
+                 "Tostada de [Granos Integrales (Pan integral de centeno)] con [Grasas Saludables (Aguacate)] y [Proteína Saludable (Huevo)] pochado",
+                 "[Proteína Saludable (Yogur griego natural)] con [Frutas (Arándanos)] y [Granos Integrales (Avena en copos)]",
+                 "Tortilla de [Proteína Saludable (Claras de huevo)] con [Vegetales (Espinacas)] y [Vegetales (Champiñones)]",
+                 "Batido con [Proteína Saludable (Queso fresco batido 0%)] , [Frutas (Plátano)] y [Grasas Saludables (Semillas de chía)]"
+             ],
+             "Media Mañana": [
+                 "[Frutas (Manzana)] con un puñado de [Grasas Saludables (Almendras)]",
+                 "[Proteína Saludable (Yogur griego natural)] con [Grasas Saludables (Semillas de calabaza)]",
+                 "Palitos de [Vegetales (Zanahoria)] y [Vegetales (Pepino)] con hummus ([Proteína Saludable (Garbanzos)])",
+                 "Un puñado de [Grasas Saludables (Nueces)]"
+             ],
+             "Comida": [
+                 "[Proteína Saludable (Pechuga de pollo)] al [método de cocción (plancha)] con [Granos Integrales (Quinoa)] y [Vegetales (Brócoli)] al vapor",
+                 "Potaje de [Proteína Saludable (Lentejas)] con [Vegetales (Zanahoria)], [Vegetales (Cebolla)] y [Vegetales (Pimiento rojo)]",
+                 "Ensalada completa: base de [Vegetales (Espinacas)], [Proteína Saludable (Salmón)] al horno, [Granos Integrales (Trigo sarraceno)], [Vegetales (Tomate)] y aderezo ([Grasas Saludables (Aceite de oliva virgen extra)])",
+                 "Salteado de [Proteína Saludable (Tofu firme)] con [Vegetales (Calabacín)], [Vegetales (Champiñones)], [Vegetales (Pimiento rojo)] y [Granos Integrales (Arroz integral)]"
+             ],
+             "Merienda": [
+                 "[Frutas (Pera)]",
+                 "[Proteína Saludable (Queso fresco batido 0%)] con [Grasas Saludables (Nueces)] picadas",
+                 "[Granos Integrales (Tortilla integral de trigo)] pequeña con [Proteína Saludable (Pechuga de pavo)] y hojas de [Vegetales (Ensalada variada)]",
+                 "Puñado de [Grasas Saludables (Avellanas)] con [Frutas (Fresas)]"
+             ],
+             "Cena": [
+                 "[Proteína Saludable (Merluza)] al [método de cocción (papillote)] con [Vegetales (Espárragos trigueros)] y [Vegetales (Tomate)] cherry",
+                 "Crema de [Vegetales (Calabacín)] con picatostes de [Granos Integrales (Pan integral de centeno)] y [Proteína Saludable (Huevo)] duro picado",
+                 "Revuelto de [Proteína Saludable (Huevos)] con [Vegetales (Champiñones)] y [Vegetales (Cebolla)], acompañado de [Grasas Saludables (Aguacate)]",
+                 "Ensalada templada de [Proteína Saludable (Garbanzos)] con [Vegetales (Pimiento asado)] y [Vegetales (Cebolla)] morada"
+             ]
+         };
+
+         // --- Función Auxiliar para Obtener Item Aleatorio de Harvard Plate ---
+        function getRandomItem(category) {
+            const items = harvardPlate[category];
+            if (!items || items.length === 0) return `[${category}?]`; // Retorna placeholder si no hay items
+            return items[Math.floor(Math.random() * items.length)]; // Elige uno al azar
+        }
+
+        // --- Función para Rellenar Plantilla de Comida y Devolver Desglose ---
+        function fillTemplate(template) {
+            let description = template; // La plantilla original
+            const breakdown = {}; // Objeto para guardar {Categoria: IngredienteSeleccionado}
+            // Encuentra todos los placeholders como [Categoria] o [Categoria (pista)]
+            const placeholders = template.match(/\[(.*?)\]/g) || [];
+
+            placeholders.forEach(placeholder => {
+                // Extrae 'Categoria' y posible 'pista' usando regex
+                const categoryMatch = placeholder.match(/\[(.*?)(?: \((.*?)\))?\]/);
+                if (categoryMatch && categoryMatch[1]) { // Si encuentra categoría
+                    const category = categoryMatch[1].trim(); // Nombre de la categoría Harvard Plate
+                    // const hint = categoryMatch[2]; // Pista (no usada activamente ahora, pero extraída)
+
+                    if (harvardPlate.hasOwnProperty(category)) { // Si es una categoría válida de Harvard Plate
+                        const randomIngredient = getRandomItem(category); // Obtiene un ingrediente al azar
+                        // Reemplaza el placeholder en la descripción (solo la primera ocurrencia por si acaso)
+                        if (description.includes(placeholder)) {
+                             description = description.replace(placeholder, randomIngredient);
+                             // Guarda el ingrediente seleccionado para esta categoría en el desglose
+                             // Solo guarda la primera vez que aparece la categoría (evita duplicados si placeholder se repite)
+                             if (!breakdown[category]) {
+                                 breakdown[category] = randomIngredient;
+                             }
+                        }
+                    } else if (category === 'método de cocción') { // Caso especial para método de cocción
+                        const metodos = ["plancha", "horno", "vapor", "papillote", "cocido", "salteado"];
+                        description = description.replace(placeholder, metodos[Math.floor(Math.random() * metodos.length)]);
+                        // No se añade al desglose Harvard
+                    }
+                     // Puedes añadir más casos especiales si es necesario
+                }
+            });
+
+            // Devuelve un objeto con la descripción final y el desglose de ingredientes por categoría
+            return { description, breakdown };
+        }
+
+
+        // --- Función Principal del Paso 5 para Diseñar Comidas ---
+        function designMeals() {
+             mealResultDiv.innerHTML = ""; // Limpiar resultado anterior
+
+             // Comprobar si los datos necesarios (Pasos 1-4) están disponibles
+             if (adjustedCalories === null || calculatedMacrosGrams === null) {
+                 alert("Completa los Pasos 1-4 (Calorías, Objetivo, Macros) antes de generar las comidas.");
+                 return;
+             }
+
+             // Validar y obtener porcentajes de distribución por comida
+             const percentageInputs = percentageInputsContainer.querySelectorAll('.meal-percentage-input');
+             let currentTotalPercentage = 0;
+             const percentages = [];
+             let validPercentages = true;
+
+             percentageInputs.forEach(input => {
+                 const value = parseFloat(input.value) || 0;
+                 if (value < 0 || value > 100) { validPercentages = false; } // Cada % debe ser 0-100
+                 percentages.push(value);
+                 currentTotalPercentage += value;
+             });
+
+             if (!validPercentages) {
+                 alert("Introduce porcentajes válidos (0-100) para cada comida.");
+                 return;
+             }
+             if (Math.round(currentTotalPercentage) !== 100) {
+                 alert(`La suma de los porcentajes de comida debe ser 100%, actualmente es ${Math.round(currentTotalPercentage)}%.`);
+                 return;
+             }
+
+             // Empezar a construir el HTML del resultado
+             const numMeals = parseInt(numMealsSelect.value);
+             const slots = mealSlotNames[numMeals]; // Nombres de las comidas (Desayuno, Comida, etc.)
+             let mealSuggestionsHTML = `<h3>Distribución Detallada y Sugerencias (${numMeals} comidas)</h3>`;
+
+             // Iterar por cada comida definida (slot)
+             slots.forEach((slot, index) => {
+                 const mealPercentage = percentages[index]; // % asignado a esta comida
+                 // Calcular calorías y macros para esta comida específica
+                 const mealCalories = adjustedCalories * (mealPercentage / 100);
+                 const mealProtein = calculatedMacrosGrams.protein * (mealPercentage / 100);
+                 const mealFat = calculatedMacrosGrams.fat * (mealPercentage / 100);
+                 const mealCarbs = calculatedMacrosGrams.carbs * (mealPercentage / 100);
+
+                 let suggestion = "No hay sugerencias específicas para este tipo de comida.";
+                 let suggestionBreakdown = {}; // Guardará el desglose {Categoria: Ingrediente}
+
+                 // Si hay ideas de menú para este tipo de comida
+                 if (menuIdeas[slot] && menuIdeas[slot].length > 0) {
+                     // Elegir una plantilla de idea al azar
+                     const randomIdeaTemplate = menuIdeas[slot][Math.floor(Math.random() * menuIdeas[slot].length)];
+                     // Rellenar la plantilla y obtener el desglose
+                     const mealDetails = fillTemplate(randomIdeaTemplate); // Devuelve {description, breakdown}
+                     suggestion = mealDetails.description; // Descripción de la comida generada
+                     suggestionBreakdown = mealDetails.breakdown; // Desglose de ingredientes
+                 }
+
+                 // --- Construir el String del Desglose Harvard ---
+                 let breakdownString = "";
+                 // Definir el orden deseado para mostrar las categorías
+                 const categoriesInOrder = ["Proteína Saludable", "Granos Integrales", "Vegetales", "Frutas", "Grasas Saludables", "Bebidas"];
+                 categoriesInOrder.forEach(cat => {
+                     if (suggestionBreakdown[cat]) { // Si esta categoría está en el desglose de la comida generada
+                         // Añadir al string, mostrando solo la primera palabra de la categoría para brevedad
+                         breakdownString += `<span style="color: #555;"><strong>${cat.split(' ')[0]}:</strong> ${suggestionBreakdown[cat]}</span> | `;
+                     }
+                 });
+                 // Eliminar el último separador " | "
+                 if (breakdownString.endsWith(" | ")) {
+                     breakdownString = breakdownString.slice(0, -3);
+                 }
+                 // Si no se generó ningún desglose (plantilla simple sin placeholders Harvard)
+                 if (breakdownString === "") {
+                     breakdownString = "<span style='font-style: italic; color: #777;'>Sin desglose Harvard aplicable a esta plantilla.</span>";
+                 }
+                 // --- Fin Construcción String Desglose ---
+
+                 // Añadir HTML para esta comida al resultado total
+                 mealSuggestionsHTML += `
+                     <div class="plan-step"> <h4>${slot} (${mealPercentage.toFixed(0)}%)</h4>
+                         <p style="font-size: 0.9em; color: #333;">
+                             <strong>Calorías:</strong> ${mealCalories.toFixed(0)} kcal |
+                             <strong>Macros:</strong> P: ${mealProtein.toFixed(1)}g | G: ${mealFat.toFixed(1)}g | C: ${mealCarbs.toFixed(1)}g
+                         </p>
+                         <p><strong>Sugerencia:</strong> ${suggestion}</p>
+                         <p style="font-size: 0.85em; line-height: 1.4; background-color:#f0f0f0; padding: 5px 8px; border-radius: 3px;">
+                              <strong>Desglose Harvard:</strong> ${breakdownString}
+                         </p>
+                     </div>`;
+             }); // Fin del bucle forEach slot
+
+             // Añadir nota final importante
+              mealSuggestionsHTML += `<hr style="margin: 20px 0;"><p><small><strong>Importante:</strong> Las sugerencias son ejemplos orientativos basados en el Plato de Harvard. <strong>Debes ajustar las cantidades</strong> de cada alimento para cumplir con las calorías y macronutrientes calculados para cada comida. La variedad, la planificación y disfrutar del proceso son clave para la adherencia.</small></p>`;
+
+             // Mostrar el resultado final en el div correspondiente
+             mealResultDiv.innerHTML = mealSuggestionsHTML;
+        }
+
+        // --- Función para Renderizar el Gráfico de Proyección de Peso ---
+        function renderWeightChart(labels, data, startWeight, targetWeight) {
+             const ctx = weightChartCanvas.getContext('2d');
+
+             // Destruir instancia anterior del gráfico si existe para evitar solapamientos
+             if (weightChartInstance) {
+                 weightChartInstance.destroy();
+             }
+
+             // Determinar límites del eje Y para mejor visualización
+             const buffer = Math.max(2, Math.abs(startWeight - targetWeight) * 0.1); // Buffer mínimo de 2kg o 10% de la diferencia
+             const minY = Math.max(0, Math.min(startWeight, targetWeight) - buffer); // Asegurar que no sea negativo
+             const maxY = Math.max(startWeight, targetWeight) + buffer;
+
+             // Crear nueva instancia de Chart.js
+             weightChartInstance = new Chart(ctx, {
+                 type: 'line', // Tipo de gráfico
+                 data: {
+                     labels: labels, // Etiquetas eje X (Semanas)
+                     datasets: [{
+                         label: 'Peso Proyectado (kg)', // Leyenda
+                         data: data, // Datos eje Y (Peso)
+                         borderColor: '#4CAF50', // Color línea
+                         backgroundColor: 'rgba(76, 175, 80, 0.1)', // Color relleno bajo línea
+                         borderWidth: 2, // Grosor línea
+                         pointBackgroundColor: '#4CAF50', // Color puntos
+                         pointRadius: 3, // Tamaño puntos
+                         tension: 0.1, // Curvatura línea (0 = recto)
+                         fill: true // Rellenar área bajo la línea
+                     }]
+                 },
+                 options: {
+                     responsive: true, // Hacer el gráfico responsive
+                     maintainAspectRatio: false, // Permitir que el gráfico se ajuste al contenedor
+                     plugins: {
+                         title: { // Título del gráfico
+                             display: true,
+                             text: `Proyección de Peso desde ${startWeight.toFixed(1)} kg hacia ${targetWeight.toFixed(1)} kg`,
+                             font: { size: 16 }
+                         },
+                         tooltip: { // Tooltips al pasar el ratón
+                             callbacks: {
+                                 label: function(context) { // Formato del tooltip
+                                     let label = context.dataset.label || '';
+                                     if (label) { label += ': '; }
+                                     if (context.parsed.y !== null) {
+                                         label += context.parsed.y + ' kg'; // Mostrar peso con 'kg'
+                                     }
+                                     return label;
+                                 }
+                             }
+                         }
+                     },
+                     scales: { // Configuración de ejes
+                         y: { // Eje Y (Peso)
+                             beginAtZero: false, // No empezar necesariamente en 0
+                             min: minY,          // Mínimo calculado
+                             max: maxY,          // Máximo calculado
+                             title: {
+                                 display: true,
+                                 text: 'Peso (kg)' // Título eje Y
+                             }
+                         },
+                         x: { // Eje X (Semanas)
+                             title: {
+                                 display: true,
+                                 text: 'Semanas' // Título eje X
+                             }
+                         }
+                     }
+                 }
+             });
+         }
+
+
+        // --- Inicialización al Cargar la Página ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePercentageInputs(); // Generar inputs de % de comida iniciales
+            numMealsSelect.addEventListener('change', updatePercentageInputs); // Listener para cambio de nº comidas
+
+            // Listeners para auto-ajustar porcentajes de macros
+            document.getElementById('protein-percentage').addEventListener('input', updateTotalMacroPercentages);
+            document.getElementById('fat-percentage').addEventListener('input', updateTotalMacroPercentages);
+            document.getElementById('carb-percentage').addEventListener('input', updateTotalMacroPercentages);
+        });
+
+        // --- Función para Auto-ajustar el último macro % al editar los otros dos ---
+        function updateTotalMacroPercentages(event) {
+            const proteinInput = document.getElementById('protein-percentage');
+            const fatInput = document.getElementById('fat-percentage');
+            const carbInput = document.getElementById('carb-percentage');
+
+            // Obtener valores actuales, tratando NaN como 0
+            const p = parseFloat(proteinInput.value) || 0;
+            const f = parseFloat(fatInput.value) || 0;
+            const c = parseFloat(carbInput.value) || 0;
+
+            const target = event.target; // Input que disparó el evento
+
+            // Ajustar el tercer valor para que la suma sea 100, priorizando no modificar el que se está editando
+            // Asegurarse de que el resultado no sea negativo
+            if (target.id !== 'carb-percentage' && p + f <= 100) {
+                carbInput.value = Math.max(0, 100 - p - f).toFixed(0);
+            } else if (target.id !== 'fat-percentage' && p + c <= 100) {
+                fatInput.value = Math.max(0, 100 - p - c).toFixed(0);
+            } else if (target.id !== 'protein-percentage' && f + c <= 100) {
+                proteinInput.value = Math.max(0, 100 - f - c).toFixed(0);
+            }
+            // Si la suma ya excede 100, no se hace nada aquí, la validación en calculateMacros() lo detectará
+        }
+
+    </script>
+
+</body>
+</html>
