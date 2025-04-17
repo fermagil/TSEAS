@@ -128,11 +128,12 @@
     <header>
         <div class="logo"><a href="#">NutriPlan</a></div>
         <nav>
-            <ul>
-                <li><a href="#" class="active">Plan Dietético</a></li>
-                <li class="button"><a href="#step-1">Empezar Ahora</a></li>
-             </ul>
-        </nav>
+    <ul>
+        <li><a href="#" class="active" onclick="guardarComoPDF()">Plan Dietético PDF</a></li>
+        <li class="button"><a href="#step-1">Empezar Ahora</a></li>
+        <li><a href="https://fermagil.github.io/TSEAS/Mi_Plato_Saludable.html" target="_blank">Plato Saludable</a></li>
+    </ul>
+</nav>
     </header>
 
     <main>
@@ -1004,6 +1005,21 @@
         }
 
     </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+	<script>
+    function guardarComoPDF() {
+        const element = document.body; // Captura todo el contenido visible
 
+        const opt = {
+            margin:       0,
+            filename:     'NutriPlan_Plan_Dietetico.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
 </body>
 </html>
