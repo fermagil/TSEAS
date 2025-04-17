@@ -288,10 +288,70 @@
             #analysis-results p, #analysis-results ul { font-size: 0.8rem; }
             .side-section-container { grid-template-columns: 1fr; }
         }
+	header {
+    background-color: #ffffff;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #dee2e6;
+}
+
+.logo a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-size: 1.75em;
+    font-weight: 600;
+}
+
+nav ul { list-style: none; padding: 0; margin: 0; display: flex; align-items: center; }
+nav ul li { margin-left: 15px; }
+nav ul li a {
+    text-decoration: none;
+    color: #495057;
+    transition: color 0.3s ease;
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.95em;
+}
+nav ul li a:hover, nav ul li a.active {
+    color: #4CAF50;
+    background-color: #e9f5e9;
+}
+nav ul li.button a {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+nav ul li.button a:hover {
+    background-color: #45a049;
+    color: white;
+    transform: translateY(-1px);
+}
+
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-700 mb-6">Mi Plato Interactivo</h1>
+<header>
+    <div class="logo">
+        <a href="#">NutriPlan</a>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#" class="active">Inicio</a></li>
+            <li><a href="#">Mi Plato Saludable</a></li>
+            <li><a href="https://fermagil.github.io/TSEAS/Code%20Nutri.html">Planificación</a></li>
+            <li class="button"><a href="#">Comenzar</a></li>
+        </ul>
+    </nav>
+</header>
+
+    <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-700 mb-6">Mi  Plato  Saludable  Interactivo</h1>
 
     <div class="container mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 main-grid">
         <div class="lg:col-span-1 bg-white p-4 md:p-6 rounded-lg shadow-md order-2 order-1-lg">
