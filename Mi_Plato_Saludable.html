@@ -3047,85 +3047,43 @@ h1 {
          * CORREGIDO: Targets 'printable-area' and hides only internal buttons.
          */
          function printToPDF() {
-            console.log("[Print PDF] Initiating PDF generation...");
+    const areaToPrint = document.querySelector('.pt-24');
 
-            // Check if libraries are loaded
-            if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined' || typeof html2canvas === 'undefined') {
-                console.error("[Print PDF] Error: jsPDF or html2canvas library not loaded.");
-                showNotification("Error: No se pudo encontrar la librería para generar PDF.", 4000, true);
-                return;
-            }
+    if (!areaToPrint) {
+        showNotification("Error: No se encontró el área a imprimir.", 4000, true);
+        return;
+    }
 
-            const { jsPDF } = window.jspdf;
-            // **CORREGIDO:** Target the correct area to print (only the plate visual)
-            const areaToPrint = document.getElementById('printable-area');
+    const { jsPDF } = window.jspdf;
 
-            if (!areaToPrint) {
-                console.error("[Print PDF] Error: Printable area element (#printable-area) not found.");
-                showNotification("Error: No se encontró el área para imprimir (#printable-area).", 4000, true);
-                return;
-            }
+    // Oculta temporalmente los botones
+    const buttonsToHide = areaToPrint.querySelectorAll('button');
+    buttonsToHide.forEach(btn => btn.style.visibility = 'hidden');
 
-            // **CORREGIDO:** Select only the remove buttons *inside* the printable area (plate sections)
-            const buttonsToHide = areaToPrint.querySelectorAll('.plate-section ul button');
+    html2canvas(areaToPrint, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+    }).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
 
-            // Hide buttons temporarily
-            buttonsToHide.forEach(btn => btn.style.visibility = 'hidden');
-            console.log(`[Print PDF] Temporarily hiding ${buttonsToHide.length} remove buttons.`);
+        const pageWidth = 210;   // A4 width in mm
+        const pageHeight = 297;  // A4 height in mm
 
-            // Use html2canvas to capture the designated area
-            html2canvas(areaToPrint, {
-                scale: 2, // Increase scale for better resolution
-                useCORS: true, // Good practice, though likely not needed here
-                logging: false // Disable html2canvas console logging
-            })
-            .then(canvas => {
-                console.log("[Print PDF] Canvas captured successfully.");
-                const imgData = canvas.toDataURL('image/png'); // Get image data from canvas
-
-                // Create new jsPDF instance (A4 size, portrait)
-                const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
-
-                // Calculate image dimensions to fit PDF page with margins
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                const margin = 40; // Page margin
-                const headerHeight = 40; // Space for title
-                const availableWidth = pdfWidth - 2 * margin;
-                const availableHeight = pdfHeight - 2 * margin - headerHeight;
-
-                // Calculate the best ratio to fit the image
-                let ratio = Math.min(availableWidth / imgProps.width, availableHeight / imgProps.height);
-                let finalImgWidth = imgProps.width * ratio;
-                let finalImgHeight = imgProps.height * ratio;
-
-                // Center the image on the page
-                let xPos = (pdfWidth - finalImgWidth) / 2;
-                let yPos = margin + headerHeight; // Position below the title
-
-                // Add title to the PDF
-                pdf.setFontSize(18);
-                pdf.text("Resumen de Mi Plato Interactivo", pdfWidth / 2, margin + 10, { align: 'center' });
-
-                // Add the captured image to the PDF
-                pdf.addImage(imgData, 'PNG', xPos, yPos, finalImgWidth, finalImgHeight);
-                console.log("[Print PDF] Image added to PDF.");
-
-                // Save the PDF
-                pdf.save('mi-plato-interactivo.pdf');
-                showNotification('PDF generado correctamente.', 3000);
-            })
-            .catch(err => {
-                console.error("[Print PDF] Error generating PDF:", err);
-                showNotification("Error al generar el PDF. Revisa la consola para más detalles.", 4000, true);
-            })
-            .finally(() => {
-                // **CORREGIDO:** Restore visibility of the remove buttons inside the plate
-                buttonsToHide.forEach(btn => btn.style.visibility = 'visible');
-                console.log("[Print PDF] Restored visibility of remove buttons.");
-            });
-        }
+        // Ajusta la imagen exactamente al tamaño A4
+        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
+        pdf.save("mi-plato-interactivo.pdf");
+        showNotification('PDF generado correctamente.', 3000);
+    })
+    .catch(err => {
+        console.error("[Print PDF] Error generating PDF:", err);
+        showNotification("Error al generar el PDF. Revisa la consola.", 4000, true);
+    })
+    .finally(() => {
+        buttonsToHide.forEach(btn => btn.style.visibility = 'visible');
+    });
+}
 
 
         /**
