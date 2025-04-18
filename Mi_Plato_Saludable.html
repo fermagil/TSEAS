@@ -3046,43 +3046,167 @@ h1 {
          * Generates a PDF of the plate area using html2canvas and jsPDF.
          * CORREGIDO: Targets 'printable-area' and hides only internal buttons.
          */
-         function printToPDF() {
-    const areaToPrint = document.querySelector('.pt-24');
+        async function printToPDF() {
+    // --- Selectores basados en tu HTML ---
+    const leftColumnSelector = '.lg\\:col-span-1.order-2.order-1-lg';
+    const rightColumnSelector = '.lg\\:col-span-2.order-1.order-2-lg';
+    const analysisSelector = '#analysis-results';
+    const plateSectionSelector = '.plate-section'; // Selector para las 4 secciones del plato
+    const plateListSelector = '.plate-section ul'; // Selector para las listas dentro del plato
+    const sideListSelector = '.side-section ul li button'; // Botones de eliminar en laterales
+    const plateRemoveButtonSelector = '.plate-section ul li button'; // Botones de eliminar en plato
+    // --- Fin de selectores ---
 
-    if (!areaToPrint) {
-        showNotification("Error: No se encontró el área a imprimir.", 4000, true);
+    const leftColumn = document.querySelector(leftColumnSelector);
+    const rightColumn = document.querySelector(rightColumnSelector);
+    const analysisArea = document.querySelector(analysisSelector);
+
+    if (!rightColumn || !analysisArea) {
+        showNotification("Error: No se encontró la columna principal del plato o el área de análisis.", 4000, true);
+        console.error("Asegúrate de que los selectores CSS son correctos:", { rightColumnSelector, analysisSelector });
         return;
     }
+     if (!leftColumn) {
+         console.warn("No se encontró la columna izquierda (selección de alimentos).");
+     }
 
     const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 15;
+    const contentWidth = pageWidth - (margin * 2);
+    const contentHeight = pageHeight - (margin * 2);
 
-    // Oculta temporalmente los botones
-    const buttonsToHide = areaToPrint.querySelectorAll('button');
-    buttonsToHide.forEach(btn => btn.style.visibility = 'hidden');
+    // --- Ocultar elementos NO deseados ---
+    let leftColumnOriginalDisplay = '';
+    if (leftColumn) {
+        leftColumnOriginalDisplay = leftColumn.style.display;
+        leftColumn.style.display = 'none';
+    }
+    const removeButtonsPlate = document.querySelectorAll(plateRemoveButtonSelector);
+    const removeButtonsSide = document.querySelectorAll(sideListSelector);
+    removeButtonsPlate.forEach(btn => btn.style.visibility = 'hidden');
+    removeButtonsSide.forEach(btn => btn.style.visibility = 'hidden');
+    const analysisOriginalDisplay = analysisArea.style.display;
+    analysisArea.style.display = 'none'; // Ocultar análisis para página 1
 
-    html2canvas(areaToPrint, {
-        scale: 3,
-        useCORS: true,
-        backgroundColor: "#ffffff"
-    }).then(canvas => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
+    console.log("[Print PDF] Elementos no deseados ocultos.");
+    // Esperar un breve instante para que el navegador aplique los estilos de ocultar
+    await new Promise(resolve => setTimeout(resolve, 150)); // Aumentamos ligeramente el retraso
 
-        const pageWidth = 210;   // A4 width in mm
-        const pageHeight = 297;  // A4 height in mm
+    try {
+        // --- Página 1: Plato, Bebida, Aceites ---
+        console.log("Generando lienzo para Página 1...");
+        const canvasPage1 = await html2canvas(rightColumn, {
+            scale: 2.5, // Aumentamos un poco la escala por si ayuda
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: true,
+            onclone: (clonedDoc) => {
+                console.log("[Print PDF - onclone Page 1] Modificando estilos para renderizar listas...");
+                // 1. Modificar estilos de las listas dentro del plato
+                const plateLists = clonedDoc.querySelectorAll(plateListSelector);
+                plateLists.forEach(ul => {
+                    ul.style.position = 'relative'; // Cambiar posicionamiento
+                    ul.style.transform = 'none'; // Quitar transformación
+                    ul.style.top = '5%'; // Ajustar posición relativa (experimentar)
+                    ul.style.left = '5%';
+                    ul.style.width = '90%'; // Asegurar ancho
+                    ul.style.height = 'auto'; // Permitir altura automática
+                    ul.style.maxHeight = 'none'; // Quitar altura máxima
+                    ul.style.overflow = 'visible'; // Mostrar todo el contenido
+                    ul.style.textAlign = 'left'; // Forzar alineación
+                    // Estilos adicionales para mejorar legibilidad
+                    ul.style.fontSize = '8px'; // Tamaño fijo pequeño (ajustar si es necesario)
+                    ul.style.lineHeight = '1.3';
+                    ul.style.color = '#000000'; // Forzar color negro por si acaso
+                    ul.style.textShadow = 'none'; // Quitar sombra de texto
+                });
 
-        // Ajusta la imagen exactamente al tamaño A4
-        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
-        pdf.save("mi-plato-interactivo.pdf");
+                // 2. Modificar estilos de las secciones del plato para asegurar visibilidad
+                 const plateSections = clonedDoc.querySelectorAll(plateSectionSelector);
+                 plateSections.forEach(section => {
+                     section.style.overflow = 'visible'; // Asegurar que el contenido no se corte
+                 });
+
+                // 3. Asegurarse de que el análisis sigue oculto en el clon
+                 const clonedAnalysis = clonedDoc.querySelector(analysisSelector);
+                 if(clonedAnalysis) {
+                     clonedAnalysis.style.display = 'none';
+                 }
+                 console.log("[Print PDF - onclone Page 1] Estilos modificados.");
+             }
+        });
+        console.log("Lienzo de Página 1 generado.");
+        const imgDataPage1 = canvasPage1.toDataURL("image/png");
+
+        // (El resto del código para añadir la imagen 1 al PDF es igual)
+        const imgPropsPage1 = pdf.getImageProperties(imgDataPage1);
+        const imgRatioPage1 = imgPropsPage1.width / imgPropsPage1.height;
+        let imgWidthPage1 = contentWidth;
+        let imgHeightPage1 = imgWidthPage1 / imgRatioPage1;
+        if (imgHeightPage1 > contentHeight) {
+            imgHeightPage1 = contentHeight;
+            imgWidthPage1 = imgHeightPage1 * imgRatioPage1;
+        }
+        const xPage1 = margin + (contentWidth - imgWidthPage1) / 2;
+        const yPage1 = margin;
+        pdf.addImage(imgDataPage1, "PNG", xPage1, yPage1, imgWidthPage1, imgHeightPage1);
+        console.log("Imagen de Página 1 añadida al PDF.");
+
+
+        // --- Página 2: Análisis Detallado ---
+        analysisArea.style.display = analysisOriginalDisplay; // Restaurar para captura
+        console.log("Visibilidad del análisis restaurada para captura de Página 2.");
+        await new Promise(resolve => setTimeout(resolve, 100)); // Pequeña pausa
+
+        pdf.addPage();
+        console.log("Página 2 añadida. Generando lienzo para el Análisis...");
+
+        const canvasPage2 = await html2canvas(analysisArea, {
+            scale: 2, // La escala aquí puede ser diferente si se necesita
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: true
+        });
+        console.log("Lienzo del Análisis generado.");
+        const imgDataPage2 = canvasPage2.toDataURL("image/png");
+
+        // (El resto del código para añadir la imagen 2 al PDF es igual)
+        const imgPropsPage2 = pdf.getImageProperties(imgDataPage2);
+        const imgRatioPage2 = imgPropsPage2.width / imgPropsPage2.height;
+        let imgWidthPage2 = contentWidth;
+        let imgHeightPage2 = imgWidthPage2 / imgRatioPage2;
+        if (imgHeightPage2 > contentHeight) {
+            imgHeightPage2 = contentHeight;
+            imgWidthPage2 = imgHeightPage2 * imgRatioPage2;
+        }
+        const xPage2 = margin + (contentWidth - imgWidthPage2) / 2;
+        const yPage2 = margin;
+        pdf.addImage(imgDataPage2, "PNG", xPage2, yPage2, imgWidthPage2, imgHeightPage2);
+        console.log("Imagen del Análisis añadida a Página 2.");
+
+
+        // --- Guardar PDF ---
+        pdf.save("mi-plato-interactivo-detallado.pdf");
         showNotification('PDF generado correctamente.', 3000);
-    })
-    .catch(err => {
-        console.error("[Print PDF] Error generating PDF:", err);
+        console.log("PDF guardado.");
+
+    } catch (err) {
+        console.error("[Print PDF] Error generando PDF:", err);
         showNotification("Error al generar el PDF. Revisa la consola.", 4000, true);
-    })
-    .finally(() => {
-        buttonsToHide.forEach(btn => btn.style.visibility = 'visible');
-    });
+    } finally {
+        // --- Restaurar visibilidad ---
+        console.log("[Print PDF] Restaurando visibilidad de elementos...");
+        if (leftColumn) {
+            leftColumn.style.display = leftColumnOriginalDisplay;
+        }
+        analysisArea.style.display = analysisOriginalDisplay;
+        removeButtonsPlate.forEach(btn => btn.style.visibility = 'visible');
+        removeButtonsSide.forEach(btn => btn.style.visibility = 'visible');
+        console.log("Visibilidad restaurada.");
+    }
 }
 
 
