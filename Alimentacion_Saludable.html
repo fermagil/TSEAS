@@ -193,7 +193,7 @@
 </section>
 
     <section>
-  <h2>4. Dietética</h2>
+ <h2>4. Dietética</h2>
   <p>La <strong>dietética</strong> es la rama de la nutrición que se encarga del estudio de la alimentación humana en relación con el estado de salud. Su objetivo principal es establecer pautas alimentarias adaptadas a las características individuales (edad, sexo, nivel de actividad física, condiciones clínicas), promoviendo una correcta nutrición y previniendo enfermedades.</p>
 
   <h3>¿Pirámide Nutricional o Plato de Harvard?</h3>
@@ -208,43 +208,304 @@
 
   <h3>Distribución de las comidas a lo largo del día</h3>
   <p>Una buena organización de las ingestas puede ayudar a controlar el apetito, regular la energía y evitar atracones. Se recomienda realizar entre <strong>3 a 5 comidas diarias</strong> según el ritmo de vida y preferencias:</p>
-  <table>
-    <tr><th>Comida</th><th>% sobre el GET diario</th></tr>
-    <tr><td>Desayuno</td><td>20-25%</td></tr>
-    <tr><td>Almuerzo</td><td>30-35%</td></tr>
-    <tr><td>Cena</td><td>25-30%</td></tr>
-    <tr><td>Media mañana / Merienda</td><td>5-10% (cada una)</td></tr>
+
+  <style>
+    .distribucion-table {
+      width: auto; /* O un ancho específico como 50% */
+      border-collapse: collapse;
+      margin-top: 15px;
+      margin-bottom: 20px; /* Espacio antes del siguiente subtítulo */
+      font-size: 0.95em;
+      min-width: 300px; /* Ancho mínimo */
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .distribucion-table th,
+    .distribucion-table td {
+      border: 1px solid #dee2e6;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    .distribucion-table th {
+      background-color: #e9f5e9;
+      color: #388E3C;
+      font-weight: 600;
+    }
+     .distribucion-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+  </style>
+
+  <table class="distribucion-table">
+    <thead>
+      <tr>
+        <th>Comida</th>
+        <th>% sobre el GET diario</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Desayuno</td>
+        <td>20-25%</td>
+      </tr>
+      <tr>
+        <td>Almuerzo</td>
+        <td>30-35%</td>
+      </tr>
+      <tr>
+        <td>Cena</td>
+        <td>25-30%</td>
+      </tr>
+      <tr>
+        <td>Media mañana / Merienda</td>
+        <td>5-10% (cada una)</td>
+      </tr>
+    </tbody>
   </table>
 
   <h3>Dietas para Deportistas</h3>
-  <p>Los requerimientos nutricionales en el deporte varían según el objetivo:</p>
+  <p>Los requerimientos nutricionales en el deporte varían significativamente según el objetivo principal del atleta, ya sea mejorar la composición corporal (perder grasa o ganar músculo) o maximizar el rendimiento. A continuación, se presenta una tabla resumen con las pautas generales de distribución de macronutrientes para los objetivos de definición y ganancia muscular:</p>
 
-  <h4> Definición muscular</h4>
+  <style>
+    .dietas-deportistas-table {
+      width: 100%; /* Ocupa el ancho disponible */
+      border-collapse: collapse;
+      margin-top: 15px;
+      margin-bottom: 25px; /* Espacio antes del siguiente título */
+      font-size: 0.9em; /* Un poco más pequeño para que quepa bien */
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .dietas-deportistas-table th,
+    .dietas-deportistas-table td {
+      border: 1px solid #dee2e6;
+      padding: 10px 8px; /* Ajusta padding si es necesario */
+      text-align: center; /* Centrado para mejor comparación */
+      vertical-align: middle;
+    }
+    .dietas-deportistas-table th {
+      background-color: #e9f5e9;
+      color: #388E3C;
+      font-weight: 600;
+    }
+     .dietas-deportistas-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+     .dietas-deportistas-table td:first-child {
+       text-align: left; /* Alinea el objetivo a la izquierda */
+       font-weight: 500;
+     }
+  </style>
+
+  <h4>Distribución de Macronutrientes según Objetivo</h4>
+<table class="dietas-deportistas-table">
+    <thead>
+        <tr>
+            <th>Objetivo</th>
+            <th>Balance Calórico</th>
+            <th>Proteínas<br>(g/kg peso)</th>
+            <th>Proteínas<br>(%)</th>
+            <th>Hidratos de Carbono<br>(g/kg peso)</th>
+            <th>Hidratos de Carbono<br>(%)</th>
+            <th>Grasas<br>(g/kg peso)</th>
+            <th>Grasas<br>(%)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Definición Muscular</strong><br>(Pérdida de Grasa)</td>
+            <td>Déficit calórico controlado<br>(Ej: -10% a -20% GET)</td>
+            <td>2.0 - 2.4 g/kg</td>
+            <td>35% - 40%</td>
+            <td>3 - 5 g/kg</td>
+            <td>35% - 45%</td>
+            <td>0.8 - 1.0 g/kg</td>
+            <td>20% - 30%</td>
+        </tr>
+        <tr>
+            <td><strong>Ganancia Muscular</strong><br>(Hipertrofia)</td>
+            <td>Superávit calórico leve<br>(Ej: +10% a +20% GET)</td>
+            <td>1.6 - 2.2 g/kg</td>
+            <td>25% - 35%</td>
+            <td>5 - 7 g/kg</td>
+            <td>45% - 55%</td>
+            <td>1.0 - 1.5 g/kg</td>
+            <td>20% - 30%</td>
+        </tr>
+    </tbody>
+</table>
+<p><em>GET = Gasto Energético Total. Estos rangos (tanto en g/kg como en %) son orientativos y deben ajustarse individualmente según la respuesta del deportista, el tipo de deporte, la intensidad y duración del entrenamiento, y otros factores personales.<br>Los valores presentados se basan en la evidencia científica actual en nutrición deportiva, conforme a recomendaciones de organizaciones como la ISSN y el posicionamiento conjunto de AND, DC, y ACSM, así como revisiones de literatura sobre estrategias de composición corporal. La suma de los porcentajes de macronutrientes debe ser siempre aproximadamente 100%.</em></p>
+
+  <h3>Suplementos Deportivos: Evidencia y Uso</h3>
+  <p>
+    La suplementación deportiva consiste en el uso de productos diseñados para complementar la dieta y potencialmente mejorar el rendimiento atlético, la recuperación o la composición corporal. Sin embargo, es crucial basar su uso en evidencia científica sólida que confirme su seguridad, legalidad y efectividad, ya que muchos suplementos en el mercado carecen de respaldo científico robusto.
+  </p>
+  <p>
+    Los suplementos deportivos se pueden clasificar según la fortaleza de la evidencia científica que apoya sus beneficios:
+  </p>
+  <ol>
+      <li><strong>Categoría A (Evidencia Fuerte / Establecida):</strong> Suplementos con evidencia científica sólida y consistente que demuestra su eficacia y seguridad cuando se usan correctamente.</li>
+      <li><strong>Categoría B (Evidencia Limitada / Mixta / En Desarrollo):</strong> Suplementos con evidencia científica emergente, inconsistente o contradictoria. Muestran potencial, pero se necesita más investigación.</li>
+      <li><strong>Categoría C (Poca o Ninguna Evidencia):</strong> Suplementos que carecen de estudios científicos suficientes o convincentes que respalden su eficacia o seguridad.</li>
+  </ol>
+
+  <h4>Tabla Educativa de Suplementos Deportivos</h4>
+  <style>
+    .suplementos-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.9em; /* Ajusta el tamaño de fuente si es necesario */
+    }
+    .suplementos-table th,
+    .suplementos-table td {
+      border: 1px solid #dee2e6;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top; /* Alinea el contenido superior para mejor lectura */
+    }
+    .suplementos-table th {
+      background-color: #e9f5e9; /* Un verde claro similar al nav hover */
+      color: #388E3C;
+      font-weight: 600;
+    }
+    .suplementos-table tr:nth-child(even) {
+      background-color: #f8f9fa; /* Alterna color de filas */
+    }
+    .suplementos-table td:nth-child(2) { /* Columna Categoría Evidencia */
+       white-space: nowrap; /* Evita que el texto de categoría se divida mucho */
+    }
+  </style>
+  <table class="suplementos-table">
+    <thead>
+      <tr>
+        <th>Suplemento</th>
+        <th>Categoría Evidencia</th>
+        <th>Objetivo Principal</th>
+        <th>Propiedades / Beneficios Clave</th>
+        <th>Dosificación Típica</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Creatina</strong></td>
+        <td>A (Fuerte)</td>
+        <td>Aumento Masa Muscular</td>
+        <td>Aumenta fuerza, potencia, masa magra; mejora rendimiento en esfuerzos alta intensidad (&lt;30s).</td>
+        <td>Carga: 20g/día (5-7 días) en 4 tomas; Mantenimiento: 3-5g/día. Alternativa: 5g/día sin carga.</td>
+      </tr>
+      <tr>
+        <td><strong>Cafeína</strong></td>
+        <td>A (Fuerte)</td>
+        <td>Perder Grasa / Rendimiento</td>
+        <td>Mejora rendimiento (resistencia, alta intensidad), reduce percepción esfuerzo, estimulante, evita fatiga.</td>
+        <td>3-6 mg/kg peso corporal, 60 min antes del ejercicio.</td>
+      </tr>
+      <tr>
+        <td><strong>Beta-alanina</strong></td>
+        <td>A (Fuerte)</td>
+        <td>Aumento Masa Muscular / Rendimiento</td>
+        <td>Mejora rendimiento/tolerancia en alta intensidad (30s-10min); incrementa carnosina muscular (tampón).</td>
+        <td>3.2-6.4 g/día (dividida en dosis) durante varias semanas. Alternativa: 2-6 g/día antes del ejercicio.</td>
+      </tr>
+      <tr>
+        <td><strong>Bicarbonato Sódico</strong></td>
+        <td>A (Fuerte)</td>
+        <td>Rendimiento</td>
+        <td>Mejora rendimiento sprints alta intensidad (~60s), tampón extracelular.</td>
+        <td>0.2-0.4 g/kg peso corporal (ó 200-500 mg/kg), 60-150 min antes. Probar tolerancia.</td>
+      </tr>
+      <tr>
+        <td><strong>Nitrato (Jugo Remolacha)</strong></td>
+        <td>A (Fuerte)</td>
+        <td>Rendimiento</td>
+        <td>Mejora eficiencia uso O2, rendimiento resistencia/alta intensidad (12-40min).</td>
+        <td>5-9 mmol (310-560 mg), 2-3 horas antes.</td>
+      </tr>
+       <tr>
+        <td><strong>HMB</strong></td>
+        <td>B (Limitada/Mixta)</td>
+        <td>Aumento Masa Muscular</td>
+        <td>Puede reducir daño muscular, ayudar recuperación (principiantes), evitar catabolismo. Evidencia mixta en entrenados.</td>
+        <td>1-3 g/día.</td>
+      </tr>
+      <tr>
+        <td><strong>BCAA (Aminoácidos Ramif.)</strong></td>
+        <td>B (Limitada/Mixta)</td>
+        <td>Aumento Masa Muscular / Rendimiento</td>
+        <td>Pueden reducir fatiga mental/física y daño muscular (no siempre superior a proteína completa).</td>
+        <td>2-20 g/día (antes/durante/después). (ISSN sugiere 5-10g antes/después).</td>
+      </tr>
+      <tr>
+        <td><strong>Glutamina</strong></td>
+        <td>B (Limitada/Mixta)</td>
+        <td>Aumento Masa Muscular</td>
+        <td>Posible mejora recuperación, función inmune, salud intestinal. Evidencia inconsistente para rendimiento.</td>
+        <td>Hasta 10g (1 toma) o >10g repartida (5g tomas). (ISSN sugiere 0.1-0.3 g/kg/día).</td>
+      </tr>
+      <tr>
+        <td><strong>L-Carnitina</strong></td>
+        <td>B (Equivocal/Mixta)</td>
+        <td>Perder Grasa / Rendimiento</td>
+        <td>Posible facilitación oxidación grasas, reducción fatiga. Resultados mixtos, baja biodisponibilidad, protocolos poco prácticos.</td>
+        <td>500-2000 mg/día. Protocolos largos (2-3g/día con CHO) pueden ser necesarios.</td>
+      </tr>
+       <tr>
+        <td><strong>Té Verde (Polifenoles)</strong></td>
+        <td>B (En Desarrollo)</td>
+        <td>Perder Grasa / Rendimiento</td>
+        <td>Puede ayudar recuperación (antioxidante/antiinflamatorio), ahorrar glucógeno, retrasar fatiga.</td>
+        <td>400-500 mg de EGCG al día.</td>
+      </tr>
+      <tr>
+        <td><strong>Ácido Linoleico Conj. (ALC)</strong></td>
+        <td>C (Poca Evidencia)</td>
+        <td>Perder Grasa Corporal</td>
+        <td>Afirma ayudar a la pérdida de grasa corporal.</td>
+        <td>3.2-6.4 g diarios (con comidas).</td>
+      </tr>
+      <tr>
+        <td><strong>Colina</strong></td>
+        <td>C (Poca Evidencia)</td>
+        <td>Perder Grasa Corporal</td>
+        <td>Mejora sueño/recuperación, función cerebral, preserva hígado, regula metabolismo grasas.</td>
+        <td>Ingesta recomendada 3.5g/día (no dosis de suplemento específica).</td>
+      </tr>
+      <tr>
+        <td><strong>Inositol</strong></td>
+        <td>C (Poca Evidencia)</td>
+        <td>Perder Grasa Corporal</td>
+        <td>Puede reducir colesterol, aportar energía a músculos.</td>
+        <td>300-1000 mg al día.</td>
+      </tr>
+       <tr>
+        <td><strong>Ácido Léucico (HICA)</strong></td>
+        <td>C (Poca Evidencia)</td>
+        <td>Aumento Masa Muscular</td>
+        <td>Propiedades anabólicas.</td>
+        <td>1.5 g/día (en 3 tomas de 0.5g).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Consideraciones Importantes:</h4>
   <ul>
-    <li>Déficit calórico controlado</li>
-    <li>Alta ingesta proteica: 2.0-2.4 g/kg</li>
-    <li>Hidratos moderados: 3-5 g/kg</li>
-    <li>Grasas ajustadas: 0.8-1.0 g/kg</li>
+      <li><strong>Individualización:</strong> La respuesta a los suplementos varía.</li>
+      <li><strong>Contexto:</strong> La efectividad puede depender del tipo de ejercicio.</li>
+      <li><strong>Seguridad y Calidad:</strong> Elegir productos de fuentes confiables y certificados si es posible.</li>
+      <li><strong>Consulta Profesional:</strong> Consultar con un profesional de la nutrición deportiva o médico.</li>
+      <li><strong>Base Nutricional:</strong> La suplementación debe complementar una dieta equilibrada y un entrenamiento adecuado.</li>
   </ul>
+<tfoot>
+        <tr>
+            <td colspan="8">
+                <strong>Nota:</strong> <em>La información presentada es un resumen basado en la evidencia científica actual consultada y no sustituye el consejo médico o nutricional personalizado. Los rangos de macronutrientes se alinean con las recomendaciones generales para atletas de fuerza, basadas en publicaciones como la "ISSN exercise & sports nutrition review update" (Kerksick et al., 2018) y el posicionamiento conjunto de AND, DC, y ACSM sobre Nutrición y Rendimiento Atlético (2016).
+            </td>
+        </tr>
+    </tfoot>
+</table>
 
-  <h4> Ganancia muscular</h4>
-  <ul>
-    <li>Superávit calórico leve (10-20% sobre el GET)</li>
-    <li>Proteínas: 1.6-2.2 g/kg</li>
-    <li>Hidratos: 5-7 g/kg</li>
-    <li>Grasas: 1.0-1.5 g/kg</li>
-  </ul>
 
-  <h3>Suplementos más utilizados (avalados científicamente)</h3>
-  <ul>
-    <li><strong>Creatina monohidrato:</strong> mejora la fuerza, potencia y recuperación muscular.</li>
-    <li><strong>Proteína de suero (whey):</strong> apoyo para cubrir requerimientos proteicos.</li>
-    <li><strong>Cafeína:</strong> estimula el sistema nervioso, mejora el rendimiento y la concentración.</li>
-    <li><strong>Bebidas isotónicas:</strong> reposición de electrolitos y carbohidratos durante el ejercicio prolongado.</li>
-    <li><strong>Omega 3:</strong> ayuda en la recuperación y en la salud cardiovascular.</li>
-  </ul>
-
-  <p>Estos suplementos deben usarse con criterio, priorizando siempre una alimentación completa y equilibrada como base de cualquier programa nutricional o deportivo.</p>
+  <p><em>Estos suplementos deben usarse con criterio, priorizando siempre una alimentación completa y equilibrada como base de cualquier programa nutricional o deportivo.</em></p>
+</section>
 </section>
   </main>
  <footer style="background-color: #e9ecef; text-align: center; padding: 25px 20px; color: #6c757d; border-top: 1px solid #dee2e6; font-size: 0.9em;">
