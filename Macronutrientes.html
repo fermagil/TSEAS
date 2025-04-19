@@ -12,6 +12,7 @@
       background-color: #f8f9fa;
       color: #212529;
       font-size: 16px;
+       padding-bottom: 80px;  
     }
     header {
       background-color: #ffffff;
@@ -24,7 +25,7 @@
       position: fixed;
       top: 0;
       left: 0; /* Added left: 0 */
-      width: 99%;
+      width: 100%;
       z-index: 1000;
       box-sizing: border-box;
     }
@@ -45,21 +46,18 @@
       mnav ul li { margin-left: 25px; } /* Adjusted margin */
     }
     nav ul li a {
-      text-decoration: none;
-      color: #495057;
-      font-weight: 500;
-      transition: color 0.3s ease;
-      display: inline-block;
-      padding: 8px 12px;
-      border-radius: 5px;
-      font-size: 0.95em;
-    }
-    nav ul li a:hover,
-    nav ul li a.active {
-      color: #388e3c;
-      background-color: #e9f5e9;
-    }
-	  /* Style for active link */
+            text-decoration: none;
+            color: #495057;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            background-color: #e9f5e9;
+            color: #388e3c;
+        }
+         /* Style for active link */
         nav ul li a.active {
              background-color: #c8e6c9; /* Slightly darker green for active */
              color: #2e7d32;
