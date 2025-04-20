@@ -113,6 +113,37 @@
     th {
       background-color: #e9f5e9; /* Fondo verde claro para encabezados de tabla */
     }
+    /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+                flex-direction: column; /* Stack logo and nav */
+                position: static; /* Remove fixed position on small screens */
+                 width: 100%; /* Ensure full width */
+            }
+            .logo a { 
+                font-size: 1.5em;
+                margin-bottom: 10px; /* Add space below logo */
+            }
+            nav ul { 
+                justify-content: center; 
+                flex-wrap: wrap; /* Allow nav items to wrap */
+            } 
+            nav ul li { 
+                margin: 5px 10px; /* Adjust spacing for wrapped items */
+            }
+             main {
+                 /* Reset padding-top when header is not fixed */
+                 /* Adjust this value if needed based on your layout */
+                 padding-top: 20px; 
+             }
+        }
+         @media (max-width: 480px) {
+             nav ul li a { 
+                 padding: 6px 8px; 
+                 font-size: 0.9em;
+             }
+         }
   </style>
 </head>
 <body>
