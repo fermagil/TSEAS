@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Micronutrientes - NutriPlan</title>
+  <style>
+    /* Estilos generales del cuerpo */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa; /* Color de fondo claro */
+      color: #212529; /* Color de texto principal */
+      font-size: 16px;
+      padding-bottom: 80px; /* Espacio inferior para el footer */
+    }
+    /* Estilos de la cabecera */
+    header {
+      background-color: #ffffff; /* Fondo blanco */
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra ligera */
+      border-bottom: 1px solid #dee2e6; /* Borde inferior */
+      position: fixed; /* Cabecera fija */
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000; /* Asegura que esté por encima del contenido */
+      box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+    }
+    /* Estilo del logo */
+    .logo a {
+      color: #4CAF50; /* Color verde principal */
+      text-decoration: none;
+      font-size: 1.75em;
+      font-weight: 600;
+    }
+    /* Estilos de la navegación */
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+    nav ul li { margin-left: 25px; } /* Espacio entre elementos de menú */
+    nav ul li a {
+      text-decoration: none;
+      color: #495057; /* Color de texto para enlaces */
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 4px; /* Bordes redondeados */
+      transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Transición suave */
+    }
+    /* Estilo al pasar el ratón sobre enlaces y para el enlace activo */
+    nav ul li a:hover, nav ul li a.active {
+      background-color: #e9f5e9; /* Fondo verde claro */
+      color: #388e3c; /* Color verde oscuro */
+    }
+    /* Estilo específico para el enlace activo */
+    nav ul li a.active {
+       background-color: #c8e6c9; /* Fondo verde más oscuro para activo */
+       color: #2e7d32;
+       font-weight: 600;
+    }
+    /* Estilos del pie de página */
+    footer {
+      background-color: #e9ecef; /* Fondo gris claro */
+      text-align: center;
+      padding: 25px 20px;
+      color: #6c757d; /* Color de texto gris */
+      border-top: 1px solid #dee2e6; /* Borde superior */
+      margin-top: 40px;
+      font-size: 0.9em;
+    }
+    /* Estilos del contenido principal */
+    main {
+      padding: 100px 20px 30px; /* Espaciado superior para evitar solapamiento con header */
+      padding-top: 100px;
+      padding-bottom: 40px;
+      max-width: 1000px; /* Ancho máximo del contenido */
+      margin: 0 auto; /* Centrado */
+    }
+    /* Estilos de las secciones */
+    section {
+      border: 2px solid #c8e6c9; /* Borde verde claro */
+      border-radius: 8px; /* Bordes redondeados */
+      padding: 25px;
+      background-color: #ffffff; /* Fondo blanco */
+      margin-bottom: 30px; /* Espacio entre secciones */
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); /* Sombra ligera */
+    }
+    /* Estilos de los encabezados */
+    h1, h2, h3 {
+      color: #388E3C; /* Color verde oscuro */
+    }
+    /* Estilos de las tablas */
+    table {
+      width: 100%;
+      border-collapse: collapse; /* Bordes colapsados */
+      margin-top: 15px;
+    }
+    table, th, td {
+      border: 1px solid #ccc; /* Borde gris para celdas y tabla */
+    }
+    th, td {
+      padding: 10px; /* Espaciado interno en celdas */
+      text-align: left; /* Alineación del texto */
+    }
+    th {
+      background-color: #e9f5e9; /* Fondo verde claro para encabezados de tabla */
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="#">NutriPlan</a></div>
+    <nav>
+      <ul>
+        <li><a href="https://fermagil.github.io/TSEAS/Inicio_NutriPlan.html">Inicio</a></li>
+        <li><a href="https://fermagil.github.io/TSEAS/Macronutrientes.html" class="active">Macronutrientes</a></li>
+	<li><a href="https://fermagil.github.io/TSEAS/Micronutrientes.html">Micronutrientes</a></li>
+        <li><a href="https://fermagil.github.io/TSEAS/Alimentacion_Saludable.html">Alimentación Saludable</a></li>
+        <li><a href="https://fermagil.github.io/TSEAS/Code%20Nutri.html">Planificación</a></li>
+	<li><a href="https://fermagil.github.io/TSEAS/Mi_Plato_Saludable.html">Plato Saludable</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 style="text-align: center;">Los Micronutrientes: Tus grandes aliados</h1>
+    <p style="text-align: justify; max-width: 800px; margin: 0 auto 30px auto; color: #495057;">
+      Descubre la importancia vital de las vitaminas y minerales en tu dieta. Aunque se necesitan en pequeñas cantidades, los micronutrientes son esenciales para innumerables procesos fisiológicos, desde la producción de energía hasta la defensa inmunitaria y la salud ósea. ¡Aprende a incorporarlos para potenciar tu bienestar!
+    </p>
+
+    <section>
+      <h2>1. Vitaminas: Esenciales para la Vida</h2>
+      <p>Las vitaminas son compuestos orgánicos que nuestro cuerpo necesita en pequeñas cantidades para funcionar correctamente. No suelen ser sintetizadas por el organismo (o no en cantidad suficiente), por lo que deben obtenerse a través de la dieta.</p>
+      <h3>Tipos de Vitaminas</h3>
+      <ul>
+        <li><strong>Vitaminas Hidrosolubles:</strong> Se disuelven en agua. Incluyen el complejo B (B1, B2, B3, B5, B6, B7, B9, B12) y la vitamina C. No se almacenan en grandes cantidades y el exceso se elimina por la orina, por lo que su consumo debe ser regular.</li>
+        <li><strong>Vitaminas Liposolubles:</strong> Se disuelven en grasas. Incluyen las vitaminas A, D, E y K. Se almacenan en el tejido graso y el hígado, por lo que un consumo excesivo puede ser tóxico.</li>
+      </ul>
+
+      <h3>Carencia y Exceso (Hipervitaminosis)</h3>
+      <p>La <strong>carencia</strong> de vitaminas puede provocar diversas enfermedades (escorbuto por falta de C, raquitismo por falta de D). Por otro lado, el <strong>exceso</strong> (hipervitaminosis), especialmente de vitaminas liposolubles, puede acumularse en el cuerpo y causar toxicidad, con síntomas que varían según la vitamina.</p>
+
+      <h3>Tabla Educativa de Vitaminas</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Cantidad Diaria Recomendada (Adultos)</th>
+            <th>Principales Funciones</th>
+            <th>Fuentes Alimentarias</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vitamina A (Liposoluble)</td>
+            <td>700-900 µg RAE</td>
+            <td>Visión, sistema inmune, salud de la piel</td>
+            <td>Hígado, zanahorias, espinacas, boniato, lácteos</td>
+          </tr>
+          <tr>
+            <td>Complejo B (Hidrosoluble)</td>
+            <td>Varía según la vitamina B específica</td>
+            <td>Metabolismo energético, función nerviosa, formación de glóbulos rojos</td>
+            <td>Cereales integrales, carne, pescado, huevos, legumbres, verduras de hoja verde</td>
+          </tr>
+          <tr>
+            <td>Vitamina C (Hidrosoluble)</td>
+            <td>75-90 mg</td>
+            <td>Antioxidante, sistema inmune, producción de colágeno</td>
+            <td>Cítricos, pimientos, fresas, kiwi, brócoli</td>
+          </tr>
+          <tr>
+            <td>Vitamina D (Liposoluble)</td>
+            <td>15-20 µg (600-800 UI)</td>
+            <td>Absorción de calcio, salud ósea, función inmune</td>
+            <td>Exposición solar, pescado graso, huevos, alimentos fortificados</td>
+          </tr>
+          <tr>
+            <td>Vitamina E (Liposoluble)</td>
+            <td>15 mg</td>
+            <td>Antioxidante, protege las células del daño</td>
+            <td>Aceites vegetales, frutos secos, semillas, aguacate</td>
+          </tr>
+          <tr>
+            <td>Vitamina K (Liposoluble)</td>
+            <td>90-120 µg</td>
+            <td>Coagulación sanguínea, salud ósea</td>
+            <td>Verduras de hoja verde (espinacas, col rizada), brócoli, aceites vegetales</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><small>Nota: Las cantidades diarias recomendadas (CDR) son orientativas y pueden variar según edad, sexo y condiciones específicas.</small></p>
+    </section>
+
+    <section>
+      <h2>2. Los Minerales: Elementos Clave</h2>
+      <p>Los minerales son elementos inorgánicos esenciales que el cuerpo necesita para diversas funciones estructurales y reguladoras. Participan en la formación de huesos y dientes, el equilibrio hídrico, la transmisión nerviosa y la contracción muscular, entre otras.</p>
+      <h3>Funciones y Tipos de Minerales</h3>
+      <ul>
+        <li><strong>Macrominerales:</strong> Se necesitan en cantidades mayores (más de 100 mg/día). Incluyen calcio, fósforo, magnesio, sodio, potasio, cloro y azufre.</li>
+        <li><strong>Microminerales (Oligoelementos):</strong> Se requieren en cantidades más pequeñas (menos de 100 mg/día). Incluyen hierro, zinc, yodo, selenio, cobre, manganeso, flúor y cromo.</li>
+      </ul>
+
+      <h3>Tabla Educativa de Minerales</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Cantidad Diaria Recomendada (Adultos)</th>
+            <th>Funciones Principales</th>
+            <th>Fuentes de Alimentos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Calcio (Macro)</td>
+            <td>1000-1200 mg</td>
+            <td>Salud ósea y dental, contracción muscular, coagulación</td>
+            <td>Lácteos, verduras de hoja verde, sardinas en lata (con espinas), tofu fortificado</td>
+          </tr>
+          <tr>
+            <td>Hierro (Micro)</td>
+            <td>8-18 mg (varía por sexo y edad)</td>
+            <td>Transporte de oxígeno (hemoglobina), metabolismo energético</td>
+            <td>Carne roja, aves, pescado, legumbres, espinacas, cereales fortificados</td>
+          </tr>
+          <tr>
+            <td>Magnesio (Macro)</td>
+            <td>310-420 mg</td>
+            <td>Función muscular y nerviosa, producción de energía, salud ósea</td>
+            <td>Frutos secos, semillas, legumbres, cereales integrales, verduras de hoja verde</td>
+          </tr>
+          <tr>
+            <td>Potasio (Macro)</td>
+            <td>2600-3400 mg</td>
+            <td>Equilibrio hídrico, función nerviosa y muscular, presión arterial</td>
+            <td>Plátanos, patatas, espinacas, legumbres, aguacate</td>
+          </tr>
+          <tr>
+            <td>Sodio (Macro)</td>
+            <td>&lt; 2300 mg (idealmente &lt; 1500 mg)</td>
+            <td>Equilibrio hídrico, función nerviosa</td>
+            <td>Sal de mesa, alimentos procesados, embutidos, quesos</td>
+          </tr>
+          <tr>
+            <td>Zinc (Micro)</td>
+            <td>8-11 mg</td>
+            <td>Sistema inmune, cicatrización, síntesis de proteínas y ADN</td>
+            <td>Carne, mariscos (ostras), legumbres, frutos secos, semillas</td>
+          </tr>
+        </tbody>
+      </table>
+       <p><small>Nota: Las cantidades diarias recomendadas (CDR) son orientativas y pueden variar.</small></p>
+    </section>
+
+    <section>
+      <h2>3. Las Vitaminas y la Práctica Deportiva</h2>
+      <p>Durante el ejercicio, las demandas energéticas y metabólicas aumentan, lo que puede incrementar las necesidades de ciertas vitaminas, especialmente las del complejo B (implicadas en el metabolismo energético) y la vitamina C (por su papel antioxidante y en la reparación de tejidos).</p>
+      <h3>Suplementación Deportiva: Complejo B y Vitamina C</h3>
+      <p>Aunque una dieta equilibrada suele cubrir las necesidades, algunos deportistas con entrenamientos muy intensos o dietas restrictivas pueden beneficiarse de la suplementación:</p>
+      <ul>
+        <li><strong>Complejo B:</strong> Esencial para convertir los alimentos en energía utilizable. Su déficit puede afectar el rendimiento y la recuperación.</li>
+        <li><strong>Vitamina C:</strong> Ayuda a combatir el estrés oxidativo generado por el ejercicio intenso, apoya el sistema inmune (que puede debilitarse temporalmente tras esfuerzos grandes) y contribuye a la formación de colágeno para tendones y ligamentos.</li>
+      </ul>
+
+      <h3>Tabla de Suplementación Orientativa</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Suplemento</th>
+            <th>Cuándo Tomarlo</th>
+            <th>Cómo Tomarlo</th>
+            <th>Para Qué Sirve (en Deporte)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Complejo Vitamínico B</td>
+            <td>Generalmente por la mañana, con el desayuno.</td>
+            <td>Con agua o comida. Seguir indicaciones del producto.</td>
+            <td>Optimizar el metabolismo energético, reducir fatiga, apoyar función nerviosa.</td>
+          </tr>
+          <tr>
+            <td>Vitamina C</td>
+            <td>Puede tomarse antes o después del entrenamiento, o repartida en el día.</td>
+            <td>Con agua. Dosis altas pueden causar molestias gástricas en ayunas.</td>
+            <td>Protección antioxidante, apoyo inmunitario post-ejercicio, síntesis de colágeno.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>Importante:</strong> La suplementación debe ser individualizada y preferiblemente supervisada por un profesional de la salud o nutricionista deportivo. Un exceso de vitaminas también puede ser perjudicial.</p>
+    </section>
+
+    <section>
+      <h2>4. Los Minerales y la Práctica Deportiva</h2>
+      <p>Los minerales son cruciales para el rendimiento deportivo, especialmente los electrolitos, que se pierden a través del sudor.</p>
+      <h3>Electrolitos y Rendimiento Físico</h3>
+      <p>Los electrolitos (sodio, potasio, magnesio, calcio, cloro) son minerales con carga eléctrica que regulan el equilibrio hídrico, la función nerviosa y las contracciones musculares. Su pérdida excesiva por sudoración sin una reposición adecuada puede llevar a calambres, fatiga y disminución del rendimiento.</p>
+      <h3>Funciones Clave de Minerales en el Deporte:</h3>
+      <ul>
+        <li><strong>Sodio (Na):</strong> Mantiene el volumen sanguíneo y la presión arterial, esencial para la hidratación y la función nerviosa/muscular. Se pierde en mayor cantidad por el sudor.</li>
+        <li><strong>Potasio (K):</strong> Importante para la contracción muscular (incluido el corazón) y la transmisión nerviosa. Trabaja en conjunto con el sodio.</li>
+        <li><strong>Magnesio (Mg):</strong> Participa en más de 300 reacciones enzimáticas, incluida la producción de energía y la síntesis de proteínas. Ayuda a prevenir calambres.</li>
+        <li><strong>Hierro (Fe):</strong> Fundamental para el transporte de oxígeno a los músculos (componente de la hemoglobina). Su deficiencia (anemia ferropénica) causa fatiga y reduce drásticamente el rendimiento.</li>
+      </ul>
+
+      <h3>Pautas de Hidratación y Reposición de Electrolitos</h3>
+      <p>Una correcta hidratación es vital:</p>
+      <ul>
+        <li><strong>Antes:</strong> Beber 400-600 ml de líquido 2-3 horas antes del ejercicio.</li>
+        <li><strong>Durante:</strong> Beber 150-250 ml cada 15-20 minutos. En ejercicios prolongados (>60-90 min) o en ambientes calurosos, considerar bebidas deportivas que contengan carbohidratos y electrolitos (especialmente sodio).</li>
+        <li><strong>Después:</strong> Reponer líquidos y electrolitos perdidos. Pésate antes y después para estimar la pérdida de líquido (1 kg perdido ≈ 1-1.5 L de líquido a reponer). Incluir alimentos o bebidas con sodio ayuda a la rehidratación.</li>
+      </ul>
+
+      <h3>Suplementación Deportiva Adecuada</h3>
+      <p>La necesidad de suplementos de minerales depende de la intensidad y duración del ejercicio, las condiciones ambientales y la dieta individual.</p>
+      <ul>
+        <li><strong>Bebidas deportivas:</strong> Útiles para reponer líquidos, carbohidratos y electrolitos (principalmente sodio y potasio) durante ejercicios largos o intensos.</li>
+        <li><strong>Geles/pastillas de electrolitos:</strong> Alternativa concentrada para reponer electrolitos, especialmente en deportes de ultra-resistencia.</li>
+        <li><strong>Suplementos de Magnesio/Hierro:</strong> Solo si existe deficiencia diagnosticada por un profesional, ya que el exceso puede ser perjudicial.</li>
+      </ul>
+      <p>Prioriza siempre obtener minerales a través de una dieta variada y equilibrada. La suplementación debe ser un complemento y no la base.</p>
+    </section>
+
+  </main>
+
+  <footer style="background-color: #e9ecef; text-align: center; padding: 25px 20px; color: #6c757d; border-top: 1px solid #dee2e6; font-size: 0.9em;">
+    <p>&copy; 2025 NutriPlan</p>
+    <p>Esta herramienta proporciona estimaciones y sugerencias orientativas. No sustituye el consejo de un profesional de la salud o dietista-nutricionista. Consulta siempre a un experto.</p>
+    <p>NutriPlan 2025 de Fernando Jose Martinez Gil está licenciado bajo <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a></p>
+  </footer>
+</body>
+</html>
